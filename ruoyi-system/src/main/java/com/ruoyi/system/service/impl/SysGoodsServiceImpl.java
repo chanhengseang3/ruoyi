@@ -1,29 +1,28 @@
 package com.ruoyi.system.service.impl;
 
-import java.io.*;
-import java.util.List;
-
 import com.ruoyi.common.config.IPConfig;
 import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.ip.IPInfo;
-import com.ruoyi.common.utils.ip.IPInfoUtils;
 import com.ruoyi.system.domain.SysCountry;
+import com.ruoyi.system.domain.SysGoods;
 import com.ruoyi.system.domain.SysWhiteIp;
 import com.ruoyi.system.mapper.SysCountryMapper;
+import com.ruoyi.system.mapper.SysGoodsMapper;
 import com.ruoyi.system.mapper.SysWhiteIpMapper;
+import com.ruoyi.system.service.ISysGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.SysGoodsMapper;
-import com.ruoyi.system.domain.SysGoods;
-import com.ruoyi.system.service.ISysGoodsService;
-import com.ruoyi.common.core.text.Convert;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Base64;
+import java.util.List;
 
 /**
  * 商品Service业务层处理
@@ -32,8 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2022-07-25
  */
 @Service
-public class SysGoodsServiceImpl implements ISysGoodsService 
-{
+public class SysGoodsServiceImpl implements ISysGoodsService {
     @Autowired
     private SysGoodsMapper sysGoodsMapper;
     @Autowired
@@ -163,10 +161,10 @@ public class SysGoodsServiceImpl implements ISysGoodsService
     public static boolean GenerateImage(String imgStr, OutputStream out) {
         if (imgStr == null) // 图像数据为空
             return false;
-        BASE64Decoder decoder = new BASE64Decoder();
+        var decoder = Base64.getDecoder();
         try {
             // Base64解码
-            byte[] b = decoder.decodeBuffer(imgStr);
+            byte[] b = decoder.decode(imgStr);
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {
                     b[i] += 256;
@@ -197,8 +195,8 @@ public class SysGoodsServiceImpl implements ISysGoodsService
         }
 
         // 对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(data);//返回字符串
+        var encoder = Base64.getEncoder();
+        return new String(encoder.encode(data));//返回字符串
     }
 
 

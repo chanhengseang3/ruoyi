@@ -1,12 +1,10 @@
 package com.ruoyi.system.service;
 
-import java.io.IOException;
-import java.util.List;
 import com.ruoyi.system.domain.SysGoods;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.soap.Text;
+import java.util.List;
 
 /**
  * 商品Service接口
