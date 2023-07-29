@@ -1,0 +1,4 @@
+1、数据库在  \Image_Manager\sql\image_manage.sql
+2、配置在 \Image_Manager\ruoyi-admin\src\main\resources的application-druid.yml改
+3、\Image_Manager\bin中，双击【package.bat】是打包，【run.bat】是运行，【clean.bat】是清空
+4、需要安装配置redis

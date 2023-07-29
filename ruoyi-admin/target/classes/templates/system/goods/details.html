@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改商品')" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-goods-edit" th:object="${sysGoods}">
+        <input name="goodsId" th:field="*{goodsId}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">商品名称：</label>
+            <div class="col-sm-8">
+                <input name="goodsName" th:field="*{goodsName}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">白名单商品图片：</label>
+            <div class="col-sm-8">
+                <div style="width: 100%;display: flex;flex-wrap: wrap;">
+                    <div class="whiteImg" style="display: flex;flex-wrap: wrap;margin-bottom: 10px;">
+
+                    </div>
+                </div>
+                <!--<textarea name="whiteImg" class="form-control">[[*{whiteImg}]]</textarea>-->
+                <div class="whiteImgUrl" style="display: none;">[[*{whiteImg}]]</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">黑名单商品图片：</label>
+            <div class="col-sm-8">
+                <div style="width: 100%;display: flex;flex-wrap: wrap;">
+                    <div class="blackImg" style="display: flex;flex-wrap: wrap;margin-bottom: 10px;"></div>
+
+                </div>
+                <!--<textarea name="blackImg" class="form-control">[[*{blackImg}]]</textarea>-->
+                <div class="blackImgUrl" style="display: none;">[[*{blackImg}]]</div>
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">代码展示：</label>
+            <div class="col-sm-8">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal5">生成代码</button>
+            </div>
+        </div>
+
+
+    </form>
+</div>
+
+<div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"> 代码</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="panel-body" id="whiteContent">
+                            <p>白名单代码白名单代码白名单代码白名单代码白名单代码白名单代码白名单代码白名单代码白名单代码
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    $("#form-goods-edit").validate({
+        focusCleanup: true
+    });
+
+    $(function () {
+        let whiteImgArr = $('.whiteImgUrl').html().indexOf(',')!=-1?$('.whiteImgUrl').html().split(','):[$('.whiteImgUrl').html()];
+        let blackImgArr = $('.blackImgUrl').html().indexOf(',')!=-1?$('.blackImgUrl').html().split(','):[$('.blackImgUrl').html()];
+        let str ='';
+        let wcontent='';
+        let lhost=window.location.protocol+'//'+window.location.hostname+':'+window.location.port;
+        let Interf="/test/user/listByCurrentIp/"+$('#goodsId').val()+"/";
+        //白名单图片window.location.origin
+        for (var i = 0; i < whiteImgArr.length; i++) {
+            str =`<div class="teImg" style="position: relative;margin-right: 10px;margin-bottom: 10px;">
+                               <img src="`+(lhost+"/profile"+whiteImgArr[i])+`" alt="" style="width: 80px;height: 80px;">
+                           </div>`;
+            $('.whiteImg').append(str);
+
+
+            wcontent+=`<p style="text-align: center" align="center">
+                    <img src="`+(lhost+Interf+i+"/"+i+".jpg")  +`" />
+                    </p >`;
+        }
+        $("#whiteContent").text(wcontent);
+
+
+        //黑名单图片
+        for (var i = 0; i < blackImgArr.length; i++) {
+            str =`<div class="teImg" style="position: relative;margin-right: 10px;margin-bottom: 10px;">
+                           <img src="`+(lhost+"/profile"+blackImgArr[i])+`" alt="" style="width: 80px;height: 80px;">
+                       </div>`;
+            $('.blackImg').append(str);
+        }
+    });
+
+
+</script>
+</body>
+</html>
