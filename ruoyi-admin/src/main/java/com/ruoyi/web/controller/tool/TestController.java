@@ -6,6 +6,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,19 +21,21 @@ import java.util.Map;
 
 /**
  * swagger 用户测试方法
- * 
+ *
  * @author ruoyi
  */
 @Api("用户信息管理")
 @RestController
 @RequestMapping("/test/user")
-public class TestController extends BaseController
-{
+public class TestController extends BaseController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestController.class);
 
     @Autowired
     private ISysGoodsService sysGoodsService;
 
     private final static Map<Integer, UserEntity> users = new LinkedHashMap<Integer, UserEntity>();
+
     {
         users.put(1, new UserEntity(1, "admin", "admin123", "15888888888"));
         users.put(2, new UserEntity(2, "ry", "admin123", "15666666666"));
@@ -119,16 +123,18 @@ public class TestController extends BaseController
 //    @RequiresPermissions("system:goods:details")
     @GetMapping("/listByCurrentIp/{goodsId}/{index}/{name}")
 
-    public void listByCurrentIp(@PathVariable("goodsId") Long goodsId, @PathVariable("index") int index,@PathVariable("name") String name,
-                                  HttpServletRequest request,HttpServletResponse response)
-    {
-        sysGoodsService.listByCurrentIp(goodsId,index,request,response);
+    public void listByCurrentIp(@PathVariable("goodsId") Long goodsId,
+                                @PathVariable("index") int index,
+                                @PathVariable("name") String name,
+                                HttpServletRequest request,
+                                HttpServletResponse response) {
+        LOG.info("Country is:{}", request.getHeader("CF-IPCountry"));
+        sysGoodsService.listByCurrentIp(goodsId, index, request, response);
     }
 }
 
 @ApiModel(value = "UserEntity", description = "用户实体")
-class UserEntity
-{
+class UserEntity {
     @ApiModelProperty("用户ID")
     private Integer userId;
 
@@ -141,56 +147,46 @@ class UserEntity
     @ApiModelProperty("用户手机")
     private String mobile;
 
-    public UserEntity()
-    {
+    public UserEntity() {
 
     }
 
-    public UserEntity(Integer userId, String username, String password, String mobile)
-    {
+    public UserEntity(Integer userId, String username, String password, String mobile) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.mobile = mobile;
     }
 
-    public Integer getUserId()
-    {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId)
-    {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username)
-    {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getMobile()
-    {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(String mobile)
-    {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 }
