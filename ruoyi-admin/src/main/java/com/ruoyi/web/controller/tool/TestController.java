@@ -128,7 +128,7 @@ public class TestController extends BaseController {
                                 @PathVariable("name") String name,
                                 HttpServletRequest request,
                                 HttpServletResponse response) {
-        LOG.info("Country is:{}", request.getHeader("CF-IPCountry"));
+        LOG.debug("Country is:{}", request.getHeader("CF-IPCountry"));
         sysGoodsService.listByCurrentIp(goodsId, index, request, response);
     }
 }
