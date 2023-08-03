@@ -1,0 +1,1 @@
+mysql -u root -p image_manage < image_manage.sql
