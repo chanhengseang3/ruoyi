@@ -28,7 +28,7 @@ public class EmbeddedTomcatConfiguration {
         if (StringUtils.isBlank(this.additionalPort)) {
             return null;
         }
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        var connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
         connector.setPort(Integer.parseInt(additionalPort));
         return connector;
