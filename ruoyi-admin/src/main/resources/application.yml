@@ -18,6 +18,7 @@ ruoyi:
 server:
   # 服务器的HTTP端口，默认为80
   port: 443
+  additionalPort: 81
   servlet:
     # 应用的访问路径
     context-path: /
