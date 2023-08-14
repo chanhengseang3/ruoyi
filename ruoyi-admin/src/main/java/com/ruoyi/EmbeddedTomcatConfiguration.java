@@ -3,7 +3,6 @@ package com.ruoyi;
 import org.apache.catalina.connector.Connector;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.embedded.tomcat.ConfigurableTomcatWebServerFactory;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,7 @@ public class EmbeddedTomcatConfiguration {
     private String additionalPort;
 
     @Bean
-    public ConfigurableTomcatWebServerFactory servletContainer() {
+    public TomcatServletWebServerFactory servletContainer() {
         System.out.println("Add additional port:" + additionalPort);
         var tomcat = new TomcatServletWebServerFactory();
         var additionalConnector = this.additionalConnector();
