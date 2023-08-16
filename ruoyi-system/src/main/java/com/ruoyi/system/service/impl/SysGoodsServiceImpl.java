@@ -40,6 +40,7 @@ import java.util.List;
 public class SysGoodsServiceImpl implements ISysGoodsService {
 
     private static final Logger log = LoggerFactory.getLogger(SysGoodsServiceImpl.class);
+    private static final Base64.Decoder decoder = Base64.getDecoder();
 
     @Autowired
     private SysGoodsMapper sysGoodsMapper;
@@ -194,17 +195,12 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         if (imgStr == null) {
             return false;
         }
-
-        var decoder = Base64.getDecoder();
         try {
             byte[] decodedBytes = decoder.decode(imgStr);
             ByteBuffer buffer = ByteBuffer.wrap(decodedBytes);
-
             WritableByteChannel channel = Channels.newChannel(out);
             channel.write(buffer);
-
             channel.close(); // It's the caller's responsibility to close the OutputStream.
-
             return true;
         } catch (IOException e) {
             return false;
