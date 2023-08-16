@@ -163,7 +163,7 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
             log.error("fail to read/write image", ex);
         }
         stopWatch.stop();
-        if (stopWatch.getTotalTimeSeconds() > 2) {
+        if (stopWatch.getTotalTimeSeconds() > 5) {
             log.warn(stopWatch.toString());
         }
     }

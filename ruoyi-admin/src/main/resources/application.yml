@@ -26,17 +26,19 @@ server:
     # tomcat的URI编码
     uri-encoding: UTF-8
     # 连接数满后的排队数，默认为100
-    accept-count: 800
+    accept-count: 1000
     threads:
       # tomcat最大线程数，默认为200
-      max: 800
+      max: 2000
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
   ssl:
     key-store-password: "!QAZ1qaz"
     key-store: classpath:keystore.p12
     key-store-type: PKCS12
-
+  undertow:
+    threads:
+      worker: 50
 # 日志配置
 logging:
   level:
