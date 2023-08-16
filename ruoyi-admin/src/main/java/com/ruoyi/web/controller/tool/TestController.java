@@ -120,9 +120,7 @@ public class TestController extends BaseController {
      * 根据当前访问的ip查看黑/白名单商品
      */
     @ApiOperation("根据当前访问的ip查看黑/白名单商品")
-//    @RequiresPermissions("system:goods:details")
     @GetMapping("/listByCurrentIp/{goodsId}/{index}/{name}")
-
     public void listByCurrentIp(@PathVariable("goodsId") Long goodsId,
                                 @PathVariable("index") int index,
                                 @PathVariable("name") String name,

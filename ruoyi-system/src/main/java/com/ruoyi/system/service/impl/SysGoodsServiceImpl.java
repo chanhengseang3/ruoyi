@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * 商品Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2022-07-25
  */
@@ -41,75 +41,69 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
 
     /**
      * 查询商品
-     * 
+     *
      * @param goodsId 商品主键
      * @return 商品
      */
     @Override
-    public SysGoods selectSysGoodsByGoodsId(Long goodsId)
-    {
+    public SysGoods selectSysGoodsByGoodsId(Long goodsId) {
         return sysGoodsMapper.selectSysGoodsByGoodsId(goodsId);
     }
 
     /**
      * 查询商品列表
-     * 
+     *
      * @param sysGoods 商品
      * @return 商品
      */
     @Override
-    public List<SysGoods> selectSysGoodsList(SysGoods sysGoods)
-    {
+    public List<SysGoods> selectSysGoodsList(SysGoods sysGoods) {
         return sysGoodsMapper.selectSysGoodsList(sysGoods);
     }
 
     /**
      * 新增商品
-     * 
+     *
      * @param sysGoods 商品
      * @return 结果
      */
     @Override
-    public int insertSysGoods(SysGoods sysGoods)
-    {
+    public int insertSysGoods(SysGoods sysGoods) {
         sysGoods.setCreateTime(DateUtils.getNowDate());
         return sysGoodsMapper.insertSysGoods(sysGoods);
     }
 
     /**
      * 修改商品
-     * 
+     *
      * @param sysGoods 商品
      * @return 结果
      */
     @Override
-    public int updateSysGoods(SysGoods sysGoods)
-    {
+    public int updateSysGoods(SysGoods sysGoods) {
         sysGoods.setUpdateTime(DateUtils.getNowDate());
         return sysGoodsMapper.updateSysGoods(sysGoods);
     }
 
     /**
      * 批量删除商品
-     * 
+     *
      * @param goodsIds 需要删除的商品主键
      * @return 结果
      */
     @Override
-    public int deleteSysGoodsByGoodsIds(String goodsIds)
-    {
+    public int deleteSysGoodsByGoodsIds(String goodsIds) {
         return sysGoodsMapper.deleteSysGoodsByGoodsIds(Convert.toStrArray(goodsIds));
     }
 
     /**
      * 删除商品信息
-     * 
+     *
      * @param goodsId 商品主键
      * @return 结果
      */
     @Override
-    public int deleteSysGoodsByGoodsId(Long goodsId)
-    {
+    public int deleteSysGoodsByGoodsId(Long goodsId) {
         return sysGoodsMapper.deleteSysGoodsByGoodsId(goodsId);
     }
 
@@ -117,37 +111,37 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
      * 根据当前访问的ip查看黑/白名单商品
      * 如果IP的国家在黑名单内，但IP白名单有这个IP，以IP名单优先
      * 白名单=ip地址白名单>黑名单
+     *
      * @return 结果
      */
     @Override
-    public void listByCurrentIp(Long goodsId,int index,HttpServletRequest request,HttpServletResponse response)
-    {
+    public void listByCurrentIp(Long goodsId, int index, HttpServletRequest request, HttpServletResponse response) {
         boolean isWhite = false;
         //获取当前访问的ip
         String ip = IPConfig.getIp(request);
 
         SysWhiteIp sysWhiteIp = new SysWhiteIp();
         sysWhiteIp.setWhiteIpAdd(ip);
-        List<SysWhiteIp> ips= ipMapper.selectSysWhiteIpList(sysWhiteIp);
-        if(ips.size() > 0){
+        List<SysWhiteIp> ips = ipMapper.selectSysWhiteIpList(sysWhiteIp);
+        if (ips.size() > 0) {
             isWhite = true;
-        }else{
+        } else {
             String getCountry = IPConfig.getAddressByIp(ip);
-            List<SysCountry> countries= countryMapper.selectSysCountryListByName(getCountry);
-            if(countries.size()> 0 && countries.get(0).getCountryType() == 0){
+            List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
+            if (countries.size() > 0 && countries.get(0).getCountryType() == 0) {
                 isWhite = true;
             }
         }
 
         SysGoods sysGoods = selectSysGoodsByGoodsId(goodsId);
-        if(null == sysGoods){
+        if (null == sysGoods) {
             throw new ServiceException("商品不存在！！！");
         }
 
         try {
             response.setContentType("image/jpeg");
             OutputStream toClient = response.getOutputStream();
-            String xmlImg = GetImageStr(RuoYiConfig.getProfile() +  (isWhite ?  sysGoods.getWhiteImg().split(",")[index] : sysGoods.getBlackImg().split(",")[index]));
+            String xmlImg = GetImageStr(RuoYiConfig.getProfile() + (isWhite ? sysGoods.getWhiteImg().split(",")[index] : sysGoods.getBlackImg().split(",")[index]));
             xmlImg = xmlImg.replace("data:image/gif;base64,", "");
             xmlImg = xmlImg.replace("data:image/jpg;base64,", "");
 //            System.out.println(xmlImg);
@@ -198,7 +192,6 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         var encoder = Base64.getEncoder();
         return new String(encoder.encode(data));//返回字符串
     }
-
 
 
 }
