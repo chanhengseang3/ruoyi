@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @Import(EmbeddedTomcatConfiguration.class)
-@EnableCaching
 public class RuoYiApplication
 {
     public static void main(String[] args)
