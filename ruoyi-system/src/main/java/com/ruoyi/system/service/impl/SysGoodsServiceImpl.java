@@ -44,8 +44,6 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
     private SysWhiteIpMapper ipMapper;
     @Autowired
     private SysCountryMapper countryMapper;
-    @Autowired
-    private IPConfig ipConfig;
 
     /**
      * 查询商品
@@ -134,7 +132,7 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         if (ips.size() > 0) {
             isWhite = true;
         } else {
-            String getCountry = ipConfig.getAddressByIp(ip);
+            String getCountry = IPConfig.getAddressByIp(ip);
             List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
             if (countries.size() > 0 && countries.get(0).getCountryType() == 0) {
                 isWhite = true;
