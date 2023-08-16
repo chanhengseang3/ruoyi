@@ -198,7 +198,7 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         }
 
         var stopWatch = new StopWatch("Read image and write into output stream");
-        stopWatch.start("Read from disk");
+        stopWatch.start("Read from disk no decrypt");
         try {
             String path = RuoYiConfig.getProfile() + (isWhite ? sysGoods.getWhiteImg().split(",")[index] : sysGoods.getBlackImg().split(",")[index]);
             Path filePath = Paths.get(path);
