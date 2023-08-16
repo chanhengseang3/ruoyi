@@ -5,37 +5,43 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 
+@Service
 public class IPConfig {
 
     private static final String LOCAL_IP = "127.0.0.1";
 
     private static final String UNKNOWN = "未知";
 
-
     private static final Logger log = LoggerFactory.getLogger(IPConfig.class);
 
     public static String getIpAddr(HttpServletRequest request) {
-        String agent = request.getHeader("user-agent");
-        return agent;
+        return request.getHeader("user-agent");
     }
 
     public static String getIp(HttpServletRequest request) {
-        String ipAddress = null;
+        String ipAddress;
 
         ipAddress = request.getHeader("x-forwarded-for");
-        if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
         }
-        if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("WL-Proxy-Client-IP");
         }
-        if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
             if (ipAddress.equals("127.0.0.1")) {
                 //根据网卡取本机配置的IP
@@ -43,13 +49,11 @@ public class IPConfig {
                 try {
                     inet = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    log.error("Can't get IP", e);
                 }
                 ipAddress = inet.getHostAddress();
             }
-
         }
-
 
         //对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
         if (ipAddress != null && ipAddress.length() > 15) { //"***.***.***.***".length() = 15
@@ -61,7 +65,8 @@ public class IPConfig {
         return ipAddress;
     }
 
-    public static String getAddressByIp(String ip) {
+    @Cacheable(cacheNames = "IP:COUNTRY", key = "IP:#p0")
+    public String getAddressByIp(String ip) {
         try {
             var stopWatch = new StopWatch("Get Country from IP:" + ip);
             stopWatch.start("http request to IP138");
@@ -86,11 +91,5 @@ public class IPConfig {
         } catch (IOException e) {
             return UNKNOWN;
         }
-    }
-
-    public static void main(String[] args) {
-        String ip = "58.16.180.3";
-        String address = getAddressByIp(ip);
-        System.out.println(address);
     }
 }

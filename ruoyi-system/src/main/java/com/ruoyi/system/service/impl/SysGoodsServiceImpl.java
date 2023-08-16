@@ -12,8 +12,11 @@ import com.ruoyi.system.mapper.SysCountryMapper;
 import com.ruoyi.system.mapper.SysGoodsMapper;
 import com.ruoyi.system.mapper.SysWhiteIpMapper;
 import com.ruoyi.system.service.ISysGoodsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,12 +35,17 @@ import java.util.List;
  */
 @Service
 public class SysGoodsServiceImpl implements ISysGoodsService {
+
+    private static final Logger log = LoggerFactory.getLogger(SysGoodsServiceImpl.class);
+
     @Autowired
     private SysGoodsMapper sysGoodsMapper;
     @Autowired
     private SysWhiteIpMapper ipMapper;
     @Autowired
     private SysCountryMapper countryMapper;
+    @Autowired
+    private IPConfig ipConfig;
 
     /**
      * 查询商品
@@ -126,7 +134,7 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         if (ips.size() > 0) {
             isWhite = true;
         } else {
-            String getCountry = IPConfig.getAddressByIp(ip);
+            String getCountry = ipConfig.getAddressByIp(ip);
             List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
             if (countries.size() > 0 && countries.get(0).getCountryType() == 0) {
                 isWhite = true;
@@ -138,18 +146,24 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
             throw new ServiceException("商品不存在！！！");
         }
 
+        var stopWatch = new StopWatch("Read image and write into output stream");
+        stopWatch.start("Read from disk");
         try {
             response.setContentType("image/jpeg");
             OutputStream toClient = response.getOutputStream();
             String xmlImg = GetImageStr(RuoYiConfig.getProfile() + (isWhite ? sysGoods.getWhiteImg().split(",")[index] : sysGoods.getBlackImg().split(",")[index]));
             xmlImg = xmlImg.replace("data:image/gif;base64,", "");
             xmlImg = xmlImg.replace("data:image/jpg;base64,", "");
-//            System.out.println(xmlImg);
+            stopWatch.stop();
+            stopWatch.start("Write to socket");
             GenerateImage(xmlImg, toClient);
         } catch (Exception ex) {
-            System.out.println(ex.toString());
+            log.error("fail to read/write image", ex);
         }
-
+        stopWatch.stop();
+        if (stopWatch.getTotalTimeSeconds() > 2) {
+            log.warn(stopWatch.toString());
+        }
     }
 
     public static boolean GenerateImage(String imgStr, OutputStream out) {
@@ -185,7 +199,7 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
             in.read(data);
             in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("fail to ready image:{}", imgFilePath, e);
         }
 
         // 对字节数组Base64编码
