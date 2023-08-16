@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.SysGoods;
+import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,4 +69,6 @@ public interface ISysGoodsService
      * @return 结果
      */
     public void listByCurrentIp(Long goodsId, int index, HttpServletRequest request,HttpServletResponse response);
+
+    ResponseEntity<byte[]> listByCurrentIp(Long goodsId, int index, HttpServletRequest request);
 }

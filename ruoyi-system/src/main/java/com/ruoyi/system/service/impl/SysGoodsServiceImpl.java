@@ -15,6 +15,8 @@ import com.ruoyi.system.service.ISysGoodsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -27,6 +29,9 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 
@@ -165,6 +170,55 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         stopWatch.stop();
         if (stopWatch.getTotalTimeSeconds() > 5) {
             log.warn(stopWatch.toString());
+        }
+    }
+
+    @Override
+    public ResponseEntity<byte[]> listByCurrentIp(Long goodsId, int index, HttpServletRequest request) {
+        boolean isWhite = false;
+        //获取当前访问的ip
+        String ip = IPConfig.getIp(request);
+
+        SysWhiteIp sysWhiteIp = new SysWhiteIp();
+        sysWhiteIp.setWhiteIpAdd(ip);
+        List<SysWhiteIp> ips = ipMapper.selectSysWhiteIpList(sysWhiteIp);
+        if (ips.size() > 0) {
+            isWhite = true;
+        } else {
+            String getCountry = IPConfig.getAddressByIp(ip);
+            List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
+            if (countries.size() > 0 && countries.get(0).getCountryType() == 0) {
+                isWhite = true;
+            }
+        }
+
+        SysGoods sysGoods = selectSysGoodsByGoodsId(goodsId);
+        if (null == sysGoods) {
+            throw new ServiceException("商品不存在！！！");
+        }
+
+        var stopWatch = new StopWatch("Read image and write into output stream");
+        stopWatch.start("Read from disk");
+        try {
+            String path = RuoYiConfig.getProfile() + (isWhite ? sysGoods.getWhiteImg().split(",")[index] : sysGoods.getBlackImg().split(",")[index]);
+            Path filePath = Paths.get(path);
+            var mimeType = Files.probeContentType(filePath);
+            MediaType contentType = MediaType.IMAGE_JPEG;
+            if (mimeType.contains("gif")) {
+                contentType = MediaType.IMAGE_GIF;
+            }
+            var files = Files.readAllBytes(filePath);
+            stopWatch.stop();
+            if (stopWatch.getTotalTimeSeconds() > 5) {
+                log.warn(stopWatch.toString());
+            }
+            return ResponseEntity
+                    .ok()
+                    .contentType(contentType)
+                    .body(files);
+        } catch (Exception ex) {
+            log.error("fail to read/write image", ex);
+            throw new RuntimeException("cannot read image");
         }
     }
 

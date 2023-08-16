@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -121,13 +122,12 @@ public class TestController extends BaseController {
      */
     @ApiOperation("根据当前访问的ip查看黑/白名单商品")
     @GetMapping("/listByCurrentIp/{goodsId}/{index}/{name}")
-    public void listByCurrentIp(@PathVariable("goodsId") Long goodsId,
-                                @PathVariable("index") int index,
-                                @PathVariable("name") String name,
-                                HttpServletRequest request,
-                                HttpServletResponse response) {
+    public ResponseEntity<byte[]> listByCurrentIp(@PathVariable("goodsId") Long goodsId,
+                                          @PathVariable("index") int index,
+                                          @PathVariable("name") String name,
+                                          HttpServletRequest request) {
         LOG.debug("Country is:{}", request.getHeader("CF-IPCountry"));
-        sysGoodsService.listByCurrentIp(goodsId, index, request, response);
+        return sysGoodsService.listByCurrentIp(goodsId, index, request);
     }
 }
 
