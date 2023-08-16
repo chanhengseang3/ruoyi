@@ -24,6 +24,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.WritableByteChannel;
 import java.util.Base64;
 import java.util.List;
 
@@ -154,7 +157,7 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
             xmlImg = xmlImg.replace("data:image/jpg;base64,", "");
             stopWatch.stop();
             stopWatch.start("Write to socket");
-            GenerateImage(xmlImg, toClient);
+            generateImage(xmlImg, toClient);
         } catch (Exception ex) {
             log.error("fail to read/write image", ex);
         }
@@ -182,6 +185,28 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
             out.close();
             return true;
         } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // use NIO
+    public static boolean generateImage(String imgStr, OutputStream out) {
+        if (imgStr == null) {
+            return false;
+        }
+
+        var decoder = Base64.getDecoder();
+        try {
+            byte[] decodedBytes = decoder.decode(imgStr);
+            ByteBuffer buffer = ByteBuffer.wrap(decodedBytes);
+
+            WritableByteChannel channel = Channels.newChannel(out);
+            channel.write(buffer);
+
+            channel.close(); // It's the caller's responsibility to close the OutputStream.
+
+            return true;
+        } catch (IOException e) {
             return false;
         }
     }
