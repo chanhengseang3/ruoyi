@@ -17,7 +17,6 @@ public class IPConfig {
 
     private static final String UNKNOWN = "未知";
 
-
     private static final Logger log = LoggerFactory.getLogger(IPConfig.class);
 
     public static String getIpAddr(HttpServletRequest request) {
