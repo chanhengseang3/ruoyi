@@ -27,6 +27,9 @@ public class IPConfig {
     public static String getIp(HttpServletRequest request) {
         String ipAddress = null;
 
+        String proxyProtocolData = request.getHeader("Proxy-Protocol");
+        log.info("proxyProtocolData:{}", proxyProtocolData);
+
         ipAddress = request.getHeader("x-forwarded-for");
         if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
