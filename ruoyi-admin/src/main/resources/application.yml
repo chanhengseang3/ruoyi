@@ -32,10 +32,10 @@ server:
       max: 2000
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
-  ssl:
-    key-store-password: "!QAZ1qaz"
-    key-store: classpath:keystore.p12
-    key-store-type: PKCS12
+#  ssl:
+#    key-store-password: "!QAZ1qaz"
+#    key-store: classpath:keystore.p12
+#    key-store-type: PKCS12
   undertow:
     threads:
       worker: 50
