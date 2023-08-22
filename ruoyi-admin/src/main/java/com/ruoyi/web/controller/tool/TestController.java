@@ -122,12 +122,13 @@ public class TestController extends BaseController {
      */
     @ApiOperation("根据当前访问的ip查看黑/白名单商品")
     @GetMapping("/listByCurrentIp/{goodsId}/{index}/{name}")
-    public ResponseEntity<byte[]> listByCurrentIp(@PathVariable("goodsId") Long goodsId,
-                                          @PathVariable("index") int index,
-                                          @PathVariable("name") String name,
-                                          HttpServletRequest request) {
+    public void listByCurrentIp(@PathVariable("goodsId") Long goodsId,
+                                                  @PathVariable("index") int index,
+                                                  @PathVariable("name") String name,
+                                                  HttpServletRequest request,
+                                                  HttpServletResponse response) {
         LOG.debug("Country is:{}", request.getHeader("CF-IPCountry"));
-        return sysGoodsService.listByCurrentIp(goodsId, index, request);
+        sysGoodsService.listByCurrentIp(goodsId, index, request, response);
     }
 }
 

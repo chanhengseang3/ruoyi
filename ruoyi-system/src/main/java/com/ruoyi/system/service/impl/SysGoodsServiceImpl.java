@@ -122,13 +122,6 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         return sysGoodsMapper.deleteSysGoodsByGoodsId(goodsId);
     }
 
-    /**
-     * 根据当前访问的ip查看黑/白名单商品
-     * 如果IP的国家在黑名单内，但IP白名单有这个IP，以IP名单优先
-     * 白名单=ip地址白名单>黑名单
-     *
-     * @return 结果
-     */
     @Override
     public void listByCurrentIp(Long goodsId, int index, HttpServletRequest request, HttpServletResponse response) {
         boolean isWhite = false;
@@ -138,12 +131,13 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         SysWhiteIp sysWhiteIp = new SysWhiteIp();
         sysWhiteIp.setWhiteIpAdd(ip);
         List<SysWhiteIp> ips = ipMapper.selectSysWhiteIpList(sysWhiteIp);
-        if (ips.size() > 0) {
+        if (!ips.isEmpty()) {
             isWhite = true;
         } else {
             String getCountry = IPConfig.getAddressByIp(ip);
+            log.info("IP is:{} Country is:{}", ip, getCountry);
             List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
-            if (countries.size() > 0 && countries.get(0).getCountryType() == 0) {
+            if (!countries.isEmpty() && countries.get(0).getCountryType() == 0) {
                 isWhite = true;
             }
         }
@@ -182,12 +176,12 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         SysWhiteIp sysWhiteIp = new SysWhiteIp();
         sysWhiteIp.setWhiteIpAdd(ip);
         List<SysWhiteIp> ips = ipMapper.selectSysWhiteIpList(sysWhiteIp);
-        if (ips.size() > 0) {
+        if (!ips.isEmpty()) {
             isWhite = true;
         } else {
             String getCountry = IPConfig.getAddressByIp(ip);
             List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
-            if (countries.size() > 0 && countries.get(0).getCountryType() == 0) {
+            if (!countries.isEmpty() && countries.get(0).getCountryType() == 0) {
                 isWhite = true;
             }
         }
@@ -245,9 +239,9 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
     }
 
     // use NIO
-    public static boolean generateImage(String imgStr, OutputStream out) {
+    public static void generateImage(String imgStr, OutputStream out) {
         if (imgStr == null) {
-            return false;
+            return;
         }
         try {
             byte[] decodedBytes = decoder.decode(imgStr);
@@ -255,9 +249,8 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
             WritableByteChannel channel = Channels.newChannel(out);
             channel.write(buffer);
             channel.close(); // It's the caller's responsibility to close the OutputStream.
-            return true;
         } catch (IOException e) {
-            return false;
+            log.info("IO error", e);
         }
     }
 
@@ -279,6 +272,4 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         var encoder = Base64.getEncoder();
         return new String(encoder.encode(data));//返回字符串
     }
-
-
 }

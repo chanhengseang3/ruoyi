@@ -68,7 +68,7 @@ public interface ISysGoodsService
      *
      * @return 结果
      */
-    public void listByCurrentIp(Long goodsId, int index, HttpServletRequest request,HttpServletResponse response);
+    void listByCurrentIp(Long goodsId, int index, HttpServletRequest request,HttpServletResponse response);
 
     ResponseEntity<byte[]> listByCurrentIp(Long goodsId, int index, HttpServletRequest request);
 }

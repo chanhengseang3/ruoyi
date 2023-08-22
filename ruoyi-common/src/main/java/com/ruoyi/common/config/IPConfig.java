@@ -10,19 +10,12 @@ import org.springframework.util.StopWatch;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 public class IPConfig {
 
-    private static final String LOCAL_IP = "127.0.0.1";
-
     private static final String UNKNOWN = "未知";
-
     private static final Logger log = LoggerFactory.getLogger(IPConfig.class);
-
-    public static String getIpAddr(HttpServletRequest request) {
-        String agent = request.getHeader("user-agent");
-        return agent;
-    }
 
     public static String getIp(HttpServletRequest request) {
         String ipAddress;
@@ -40,15 +33,15 @@ public class IPConfig {
                 InetAddress inet = null;
                 try {
                     inet = InetAddress.getLocalHost();
+                    ipAddress = inet.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    log.info("Unable to get IP address", e);
                 }
-                ipAddress = inet.getHostAddress();
             }
 
         }
 
-        log.info("IP FROM NEW SERVER:{}", ipAddress);
+        log.info("Original IP:{}", ipAddress);
 
         //对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
         if (ipAddress != null && ipAddress.length() > 15) { //"***.***.***.***".length() = 15
@@ -66,7 +59,7 @@ public class IPConfig {
             stopWatch.start("http request to IP138");
             URL url = new URL("https://api.ip138.com/ip/?ip=" + ip + "&datatype=jsonp&token=7d4a7771a18f25a3bebb982d63b924c0");
             URLConnection conn = url.openConnection();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
             String line;
             StringBuilder result = new StringBuilder();
             while ((line = reader.readLine()) != null) {
@@ -88,8 +81,8 @@ public class IPConfig {
     }
 
     public static void main(String[] args) {
-        String ip = "58.16.180.3";
+        String ip = "188.241.80.39";
         String address = getAddressByIp(ip);
-        System.out.println(address);
+        log.info(address);
     }
 }
