@@ -17,7 +17,7 @@ ruoyi:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为80
-  port: ${SERVER_PORT:81}
+  port: ${SERVER_PORT:80}
   #additionalPort: ${SERVER_PORT_1:443}
   servlet:
     # 应用的访问路径

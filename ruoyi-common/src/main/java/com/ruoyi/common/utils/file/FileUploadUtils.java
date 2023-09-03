@@ -17,7 +17,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -41,7 +40,7 @@ public class FileUploadUtils {
      */
     private static final String defaultBaseDir = RuoYiConfig.getProfile();
 
-    private static Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
 
     public static String getDefaultBaseDir() {
         return defaultBaseDir;
