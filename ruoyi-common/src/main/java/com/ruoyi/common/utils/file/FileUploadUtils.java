@@ -35,7 +35,7 @@ public class FileUploadUtils {
      */
     public static final int DEFAULT_FILE_NAME_LENGTH = 100;
 
-    private static final int MAX_SIZE = 1500;
+    private static final int MAX_SIZE = 2000;
 
     /**
      * 默认上传的地址
