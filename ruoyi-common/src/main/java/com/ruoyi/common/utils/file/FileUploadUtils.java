@@ -35,6 +35,8 @@ public class FileUploadUtils {
      */
     public static final int DEFAULT_FILE_NAME_LENGTH = 100;
 
+    private static final int MAX_SIZE = 1500;
+
     /**
      * 默认上传的地址
      */
@@ -106,20 +108,28 @@ public class FileUploadUtils {
         var newSize = getNewSize(originalImage);
         var targetWidth = newSize[0];
         var targetHeight = newSize[1];
-        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics2D = resizedImage.createGraphics();
-        graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
-        graphics2D.dispose();
-        return resizedImage;
+        var resize = newSize[2];
+        if (resize == 1) {
+            BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics2D = resizedImage.createGraphics();
+            graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+            graphics2D.dispose();
+            return resizedImage;
+        } else {
+            return originalImage;
+        }
     }
 
     private static int[] getNewSize(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
+        if (width < MAX_SIZE && height < MAX_SIZE) {
+            return new int[]{width, height, 0};
+        }
         if (width > height) {
-            return new int[]{1000, height * 1000 / width};
+            return new int[]{MAX_SIZE, height * MAX_SIZE / width, 1};
         } else {
-            return new int[]{width * 1000 / height, 1000};
+            return new int[]{width * MAX_SIZE / height, MAX_SIZE, 1};
         }
     }
 
