@@ -8,6 +8,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.Seq;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,10 +107,10 @@ public class FileUploadUtils {
         var originalImage = ImageIO.read(multipartFile.getInputStream());
         //originalImage.
         var newSize = getNewSize(originalImage);
-        var targetWidth = newSize[0];
-        var targetHeight = newSize[1];
-        var resize = newSize[2];
-        if (resize == 1) {
+        var targetWidth = newSize.getLeft();
+        var targetHeight = newSize.getMiddle();
+        var resize = newSize.getRight();
+        if (resize) {
             BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
             Graphics2D graphics2D = resizedImage.createGraphics();
             graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
@@ -120,16 +121,16 @@ public class FileUploadUtils {
         }
     }
 
-    private static int[] getNewSize(BufferedImage image) {
+    private static ImmutableTriple<Integer, Integer, Boolean> getNewSize(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
         if (width < MAX_SIZE && height < MAX_SIZE) {
-            return new int[]{width, height, 0};
+            return new ImmutableTriple<>(width, height, false);
         }
         if (width > height) {
-            return new int[]{MAX_SIZE, height * MAX_SIZE / width, 1};
+            return new ImmutableTriple<>(MAX_SIZE, height * MAX_SIZE / width, true);
         } else {
-            return new int[]{width * MAX_SIZE / height, MAX_SIZE, 1};
+            return new ImmutableTriple<>(width * MAX_SIZE / height, MAX_SIZE, true);
         }
     }
 
