@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -99,20 +98,18 @@ public class FileUploadUtils {
         var uploadFile = getAbsoluteFile(baseDir, fileName);
         var buffer = resizeImage(file);
         ImageIO.write(buffer, extension, uploadFile);
-        //file.transferTo(Paths.get(absPath));
         return getPathFileName(baseDir, fileName);
     }
 
     private static BufferedImage resizeImage(MultipartFile multipartFile) throws IOException {
         var originalImage = ImageIO.read(multipartFile.getInputStream());
-        //originalImage.
         var newSize = getNewSize(originalImage);
         var targetWidth = newSize.getLeft();
         var targetHeight = newSize.getMiddle();
         var resize = newSize.getRight();
         if (resize) {
-            BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-            Graphics2D graphics2D = resizedImage.createGraphics();
+            var resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+            var graphics2D = resizedImage.createGraphics();
             graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
             graphics2D.dispose();
             return resizedImage;
