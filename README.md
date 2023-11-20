@@ -1,16 +1,30 @@
-打jar包
-在 /bin
-package.bat 打包
-打出来的包在ruoyi-admin\target\ruoyi-admin.jar
+## 安装步骤
+### 1. 安装JDK和MySQL
+- 安装OpenJDK17: https://www.rosehosting.com/blog/how-to-install-java-17-lts-on-ubuntu-20-04/
+- 安装MySQL8: https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04 (设置密码为：!QAZ1qaz)
+- 安装Git: https://www.digitalocean.com/community/tutorials/how-to-install-git-on-ubuntu-20-04
 
-
-Linux环境运行命令
-启动  nohup java -jar ruoyi-admin.jar &
-查看日志 tail -500f nohup.out
-出现 【“图片管理启动成功”】等字体为启动项目成功
-
+### 2. 部署
+1. Clone project from Git: 
+```shell
+git clone https://github.com/chanhengseang3/ruoyi.git
+```
+2. Run SQL script
+```shell
+cd sql
+mysql -u root -p image_manage < image_manage.sql
+```
+3. Build Jar
+```shell
+./build.sh
+```
+4. Run
+```shell
+./run.sh
+```
+5. Verify
+```curl
+http://localhost
+```
+Default username: admin
 Default password: admin123
-
-
-
-具体可看http://doc.ruoyi.vip/ruoyi/document/hjbs.html#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C
