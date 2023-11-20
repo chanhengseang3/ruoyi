@@ -23,8 +23,8 @@ mysql -u root -p image_manage < image_manage.sql
 ./run.sh
 ```
 5. Verify
-```curl
-http://localhost
 ```
+http://localhost
 Default username: admin
 Default password: admin123
+```
