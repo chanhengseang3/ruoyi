@@ -219,17 +219,4 @@ public class SysGoodsController extends BaseController
     {
         return toAjax(sysGoodsService.deleteSysGoodsByGoodsIds(ids));
     }
-
-
-
-//    /**
-//     * 根据当前访问的ip查看黑/白名单商品
-//     */
-//    @ApiOperation("根据当前访问的ip查看黑/白名单商品")
-//    @RequiresPermissions("system:goods:details")
-//    @PostMapping("/listByCurrentIp/{goodsId}")
-//    public AjaxResult listByCurrentIp(@PathVariable("goodsId") Long goodsId,HttpServletRequest request)
-//    {
-//        return success(sysGoodsService.listByCurrentIp(goodsId,request));
-//    }
 }

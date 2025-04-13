@@ -27,7 +27,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @RequestMapping("/system/country")
 public class SysCountryController extends BaseController
 {
-    private String prefix = "system/country";
+    private final String prefix = "system/country";
 
     @Autowired
     private ISysCountryService sysCountryService;

@@ -29,7 +29,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @RequestMapping("/system/ip")
 public class SysWhiteIpController extends BaseController
 {
-    private String prefix = "system/ip";
+    private final String prefix = "system/ip";
 
     @Autowired
     private ISysWhiteIpService sysWhiteIpService;
