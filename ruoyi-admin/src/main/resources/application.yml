@@ -34,9 +34,14 @@ server:
       min-spare: 100
   ssl:
     key-store: classpath:yourkeystore.jks
-    key-store-password: chanheng
-    key-store-type: JKS
+    key-store-password: "chanheng"
+    keyStoreType: JKS
     key-alias: tomcat
+
+    #server.ssl.key-store-password=T5x8htbptB2pbqN5
+    #server.ssl.key-store=classpath:keystore.jks
+    #server.ssl.keyStoreType=JKS
+
 #  ssl:
 #    key-store-password: "!QAZ1qaz"
 #    key-store: classpath:keystore.p12
