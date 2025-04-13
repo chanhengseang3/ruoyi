@@ -33,16 +33,16 @@ server:
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
   ssl:
-    key-store: classpath:yourkeystore.jks
+    key-store: classpath:dapao.jks
     key-store-password: "chanheng"
-    keyStoreType: JKS
+    key-store-type: JKS
     key-alias: tomcat
 
     #server.ssl.key-store-password=T5x8htbptB2pbqN5
     #server.ssl.key-store=classpath:keystore.jks
     #server.ssl.keyStoreType=JKS
 
-#  ssl:
+  #  ssl:
 #    key-store-password: "!QAZ1qaz"
 #    key-store: classpath:keystore.p12
 #    key-store-type: PKCS12
