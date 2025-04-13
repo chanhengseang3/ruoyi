@@ -62,12 +62,20 @@ public class TestController extends BaseController {
     @ApiOperation("根据当前访问的ip查看黑/白名单商品")
     @GetMapping("/img/{name}")
     public ResponseEntity<String> listByCurrentIp(@PathVariable("name") String name,
-                                HttpServletRequest request) {
-        LOG.info("Country is:{}", request.getHeader("CF-IPCountry"));
+                                                  HttpServletRequest request) {
+
         final var white = "https://ae01.alicdn.com/kf/S1859037fa03a42b0b9f4f2fcadf59940d.jpg";
         final var black = "https://ae01.alicdn.com/kf/Sf3f9df40e70e42da9331e222c7aee89cS.png";
+
+        final var isWhiteIP = sysGoodsService.isWhiteIp(request);
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(black));
+
+        if (isWhiteIP) {
+            headers.setLocation(URI.create(white));
+        } else {
+            headers.setLocation(URI.create(black));
+        }
         return new ResponseEntity<>(headers, HttpStatus.FOUND); // 302
     }
 }

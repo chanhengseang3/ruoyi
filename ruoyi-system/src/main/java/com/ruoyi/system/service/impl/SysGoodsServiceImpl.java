@@ -124,28 +124,14 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
 
     @Override
     public void listByCurrentIp(Long goodsId, int index, HttpServletRequest request, HttpServletResponse response) {
-        boolean isWhite = false;
-        //获取当前访问的ip
-        String ip = IPConfig.getIp(request);
 
-        SysWhiteIp sysWhiteIp = new SysWhiteIp();
-        sysWhiteIp.setWhiteIpAdd(ip);
-        List<SysWhiteIp> ips = ipMapper.selectSysWhiteIpList(sysWhiteIp);
-        if (!ips.isEmpty()) {
-            isWhite = true;
-        } else {
-            String getCountry = IPConfig.getAddressByIp(ip);
-            log.info("IP is:{} Country is:{}", ip, getCountry);
-            List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
-            if (!countries.isEmpty() && countries.get(0).getCountryType() == 0) {
-                isWhite = true;
-            }
-        }
 
         SysGoods sysGoods = selectSysGoodsByGoodsId(goodsId);
         if (null == sysGoods) {
             throw new ServiceException("商品不存在！！！");
         }
+
+        final var isWhite = isWhiteIp(request);
 
         var stopWatch = new StopWatch("Read image and write into output stream");
         stopWatch.start("Read from disk");
@@ -165,6 +151,27 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         if (stopWatch.getTotalTimeSeconds() > 5) {
             log.warn(stopWatch.toString());
         }
+    }
+
+    public boolean isWhiteIp(HttpServletRequest request) {
+        boolean isWhite = false;
+        //获取当前访问的ip
+        String ip = IPConfig.getIp(request);
+
+        SysWhiteIp sysWhiteIp = new SysWhiteIp();
+        sysWhiteIp.setWhiteIpAdd(ip);
+        List<SysWhiteIp> ips = ipMapper.selectSysWhiteIpList(sysWhiteIp);
+        if (!ips.isEmpty()) {
+            isWhite = true;
+        } else {
+            String getCountry = IPConfig.getAddressByIp(ip);
+            log.info("IP is:{} Country is:{}", ip, getCountry);
+            List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
+            if (!countries.isEmpty() && countries.get(0).getCountryType() == 0) {
+                isWhite = true;
+            }
+        }
+        return isWhite;
     }
 
     @Override

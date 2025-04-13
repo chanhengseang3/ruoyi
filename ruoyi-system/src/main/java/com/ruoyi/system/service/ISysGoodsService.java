@@ -70,5 +70,7 @@ public interface ISysGoodsService
      */
     void listByCurrentIp(Long goodsId, int index, HttpServletRequest request,HttpServletResponse response);
 
+    public boolean isWhiteIp(HttpServletRequest request);
+
     ResponseEntity<byte[]> listByCurrentIp(Long goodsId, int index, HttpServletRequest request);
 }
