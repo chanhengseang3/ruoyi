@@ -68,6 +68,7 @@ public class TestController extends BaseController {
         final var black = "https://ae01.alicdn.com/kf/Sf3f9df40e70e42da9331e222c7aee89cS.png";
 
         final var isWhiteIP = sysGoodsService.isWhiteIp(request);
+        logger.info("IP is in whitelist:{}", isWhiteIP);
 
         HttpHeaders headers = new HttpHeaders();
 

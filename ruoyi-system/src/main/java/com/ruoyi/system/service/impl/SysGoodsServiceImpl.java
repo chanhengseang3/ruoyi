@@ -111,17 +111,6 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         return sysGoodsMapper.deleteSysGoodsByGoodsIds(Convert.toStrArray(goodsIds));
     }
 
-    /**
-     * 删除商品信息
-     *
-     * @param goodsId 商品主键
-     * @return 结果
-     */
-    @Override
-    public int deleteSysGoodsByGoodsId(Long goodsId) {
-        return sysGoodsMapper.deleteSysGoodsByGoodsId(goodsId);
-    }
-
     @Override
     public void listByCurrentIp(Long goodsId, int index, HttpServletRequest request, HttpServletResponse response) {
 
