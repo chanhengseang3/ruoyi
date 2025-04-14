@@ -65,6 +65,12 @@ public class TestController extends BaseController {
     public ResponseEntity<String> listByCurrentIp(@PathVariable("name") String name,
                                                   HttpServletRequest request) {
 
+        final var requestHeaderNames = request.getHeaderNames();
+        requestHeaderNames.asIterator().forEachRemaining(hname -> {
+            logger.info("request header:{}, value:{}", hname, request.getHeader(hname));
+        });
+
+
         final var white = "https://ae01.alicdn.com/kf/S1859037fa03a42b0b9f4f2fcadf59940d.jpg";
         final var black = "https://ae01.alicdn.com/kf/Sf3f9df40e70e42da9331e222c7aee89cS.png";
 
