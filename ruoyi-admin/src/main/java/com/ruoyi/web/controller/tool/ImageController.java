@@ -25,7 +25,7 @@ public class ImageController {
     @Autowired
     private ISysGoodsService sysGoodsService;
 
-    @GetMapping("/img/{name}")
+    @GetMapping("{name}")
     public ResponseEntity<String> listByCurrentIp(@PathVariable("name") String name,
                                                   HttpServletRequest request) {
 

@@ -15,7 +15,6 @@ public class EmbeddedTomcatConfiguration {
 
     @Bean
     public TomcatServletWebServerFactory servletContainer() {
-        System.out.println("Add additional port:" + additionalPort);
         var tomcat = new TomcatServletWebServerFactory();
         var additionalConnector = this.additionalConnector();
         if (additionalConnector != null) {
