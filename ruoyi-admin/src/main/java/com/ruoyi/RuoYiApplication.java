@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
  * @author ruoyi
  */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-//@Import(EmbeddedTomcatConfiguration.class)
+@Import(EmbeddedTomcatConfiguration.class)
 public class RuoYiApplication {
     public static void main(String[] args) {
         SpringApplication.run(RuoYiApplication.class, args);

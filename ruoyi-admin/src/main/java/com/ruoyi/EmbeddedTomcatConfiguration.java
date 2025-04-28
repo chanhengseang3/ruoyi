@@ -1,15 +1,16 @@
 package com.ruoyi;
 
 import org.apache.catalina.connector.Connector;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@Configuration
+@Configuration
 public class EmbeddedTomcatConfiguration {
 
+    /*
     @Value("${server.additionalPort}")
     private String additionalPort;
 
@@ -30,6 +31,26 @@ public class EmbeddedTomcatConfiguration {
         var connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
         connector.setPort(Integer.parseInt(additionalPort));
+        return connector;
+    }
+
+     */
+
+    @Bean
+    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> webServerFactoryCustomizer() {
+        return factory -> {
+            if (factory instanceof TomcatServletWebServerFactory) {
+                ((TomcatServletWebServerFactory) factory).addAdditionalTomcatConnectors(httpConnector());
+            }
+        };
+    }
+
+    private Connector httpConnector() {
+        Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+        connector.setScheme("http");
+        connector.setPort(80); // HTTP port
+        connector.setSecure(false);
+        connector.setRedirectPort(443); // Redirect to HTTPS port
         return connector;
     }
 }
