@@ -20,20 +20,25 @@ public class IPConfig {
     public static String getIp(HttpServletRequest request) {
         String ipAddress;
         ipAddress = request.getHeader("x-forwarded-for");
+        log.info("x-forwarded-for:{}", ipAddress);
         if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
+            log.info("Proxy-Client-IP:{}", ipAddress);
         }
         if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("WL-Proxy-Client-IP");
+            log.info("WL-Proxy-Client-IP:{}", ipAddress);
         }
         if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
+            log.info("getRemoteAddr:{}", ipAddress);
             if (ipAddress.equals("127.0.0.1")) {
                 //根据网卡取本机配置的IP
                 InetAddress inet = null;
                 try {
                     inet = InetAddress.getLocalHost();
                     ipAddress = inet.getHostAddress();
+                    log.info("getLocalHost:{}", ipAddress);
                 } catch (UnknownHostException e) {
                     log.info("Unable to get IP address", e);
                 }
