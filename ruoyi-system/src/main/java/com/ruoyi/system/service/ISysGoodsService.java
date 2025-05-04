@@ -9,15 +9,14 @@ import java.util.List;
 
 /**
  * 商品Service接口
- * 
+ *
  * @author ruoyi
  * @date 2022-07-25
  */
-public interface ISysGoodsService 
-{
+public interface ISysGoodsService {
     /**
      * 查询商品
-     * 
+     *
      * @param goodsId 商品主键
      * @return 商品
      */
@@ -25,7 +24,7 @@ public interface ISysGoodsService
 
     /**
      * 查询商品列表
-     * 
+     *
      * @param sysGoods 商品
      * @return 商品集合
      */
@@ -33,7 +32,7 @@ public interface ISysGoodsService
 
     /**
      * 新增商品
-     * 
+     *
      * @param sysGoods 商品
      * @return 结果
      */
@@ -41,7 +40,7 @@ public interface ISysGoodsService
 
     /**
      * 修改商品
-     * 
+     *
      * @param sysGoods 商品
      * @return 结果
      */
@@ -49,7 +48,7 @@ public interface ISysGoodsService
 
     /**
      * 批量删除商品
-     * 
+     *
      * @param goodsIds 需要删除的商品主键集合
      * @return 结果
      */
@@ -58,9 +57,8 @@ public interface ISysGoodsService
     /**
      * 根据当前访问的ip查看黑/白名单商品
      *
-     * @return 结果
      */
-    void listByCurrentIp(Long goodsId, int index, HttpServletRequest request,HttpServletResponse response);
+    void listByCurrentIp(Long goodsId, int index, HttpServletRequest request, HttpServletResponse response);
 
     boolean isWhiteIp(HttpServletRequest request);
 

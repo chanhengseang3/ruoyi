@@ -10,6 +10,8 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.web.controller.common.CommonController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,26 +34,25 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 商品Controller
- * 
+ *
  * @author ruoyi
  * @date 2022-07-25
  */
 @Controller
 @RequestMapping("/system/goods")
-public class SysGoodsController extends BaseController
-{
-    private String prefix = "system/goods";
+@Slf4j
+@RequiredArgsConstructor
+public class SysGoodsController extends BaseController {
+
+    private static final String prefix = "system/goods";
     private static final String FILE_DELIMETER = ",";
 
-    @Autowired
-    private ISysGoodsService sysGoodsService;
-    @Autowired
-    private CommonController commonController;
+    private final ISysGoodsService sysGoodsService;
+    private final CommonController commonController;
 
     @RequiresPermissions("system:goods:view")
     @GetMapping()
-    public String goods()
-    {
+    public String goods() {
         return prefix + "/goods";
     }
 
@@ -61,8 +62,7 @@ public class SysGoodsController extends BaseController
     @RequiresPermissions("system:goods:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(SysGoods sysGoods)
-    {
+    public TableDataInfo list(SysGoods sysGoods) {
         startPage();
         List<SysGoods> list = sysGoodsService.selectSysGoodsList(sysGoods);
         return getDataTable(list);
@@ -75,8 +75,7 @@ public class SysGoodsController extends BaseController
     @Log(title = "商品", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(SysGoods sysGoods)
-    {
+    public AjaxResult export(SysGoods sysGoods) {
         List<SysGoods> list = sysGoodsService.selectSysGoodsList(sysGoods);
         ExcelUtil<SysGoods> util = new ExcelUtil<SysGoods>(SysGoods.class);
         return util.exportExcel(list, "商品数据");
@@ -87,8 +86,7 @@ public class SysGoodsController extends BaseController
      */
     @RequiresPermissions("system:goods:details")
     @GetMapping("/details/{goodsId}")
-    public String details(@PathVariable("goodsId") Long goodsId, ModelMap mmap)
-    {
+    public String details(@PathVariable("goodsId") Long goodsId, ModelMap mmap) {
         SysGoods sysGoods = sysGoodsService.selectSysGoodsByGoodsId(goodsId);
         mmap.put("sysGoods", sysGoods);
         return prefix + "/details";
@@ -98,8 +96,7 @@ public class SysGoodsController extends BaseController
      * 新增商品
      */
     @GetMapping("/add")
-    public String add()
-    {
+    public String add() {
         return prefix + "/add";
     }
 
@@ -110,24 +107,23 @@ public class SysGoodsController extends BaseController
     @Log(title = "商品", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(SysGoodsModel model)
-    {
+    public AjaxResult addSave(SysGoodsModel model) {
         SysGoods sysGoods = new SysGoods();
         AjaxResult whiteImgA = null;
         AjaxResult blackImgA = null;
 
-        if(model.getWhiteImg().isEmpty() || model.getBlackImg().isEmpty()){
+        if (model.getWhiteImg().isEmpty() || model.getBlackImg().isEmpty()) {
             throw new ServiceException("请填写完整信息后再保存");
         }
 
-        if(model.getWhiteImg().size() != model.getBlackImg().size()){
+        if (model.getWhiteImg().size() != model.getBlackImg().size()) {
             throw new ServiceException("黑白两个名单内的图片，需保证图片一一对应");
         }
 
         try {
             whiteImgA = commonController.uploadFiles(model.getWhiteImg());
             blackImgA = commonController.uploadFiles(model.getBlackImg());
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -143,8 +139,7 @@ public class SysGoodsController extends BaseController
      */
     @RequiresPermissions("system:goods:edit")
     @GetMapping("/edit/{goodsId}")
-    public String edit(@PathVariable("goodsId") Long goodsId, ModelMap mmap)
-    {
+    public String edit(@PathVariable("goodsId") Long goodsId, ModelMap mmap) {
         SysGoods sysGoods = sysGoodsService.selectSysGoodsByGoodsId(goodsId);
         mmap.put("sysGoods", sysGoods);
         return prefix + "/edit";
@@ -157,20 +152,19 @@ public class SysGoodsController extends BaseController
     @Log(title = "商品", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(SysGoodsModel model)
-    {
+    public AjaxResult editSave(SysGoodsModel model) {
         SysGoods sysGoods = new SysGoods();
-        AjaxResult whiteImgA = null;
-        AjaxResult blackImgA = null;
+        AjaxResult whiteImgA;
+        AjaxResult blackImgA;
 
-        int whiteNum = (null == model.getWhiteImg() ? 0 :model.getWhiteImg().size())+model.getWhiteImgEdit().size();
-        int blackNum = (null == model.getBlackImg() ? 0 :model.getBlackImg().size())+model.getBlackImgEdit().size();
+        int whiteNum = (null == model.getWhiteImg() ? 0 : model.getWhiteImg().size()) + model.getWhiteImgEdit().size();
+        int blackNum = (null == model.getBlackImg() ? 0 : model.getBlackImg().size()) + model.getBlackImgEdit().size();
 
-        if(whiteNum + blackNum == 0){
+        if (whiteNum + blackNum == 0) {
             return error("请填写完整信息后再保存");
         }
 
-        if(whiteNum != blackNum){
+        if (whiteNum != blackNum) {
             return error("黑白两个名单内的图片，需保证图片一一对应");
         }
 
@@ -178,26 +172,27 @@ public class SysGoodsController extends BaseController
         List<String> blackArr = new ArrayList<>();
 
 
-        if(!model.getWhiteImgEdit().isEmpty()){
+        if (!model.getWhiteImgEdit().isEmpty()) {
             whileArr.addAll(model.getWhiteImgEdit());
         }
-        if(!model.getBlackImgEdit().isEmpty()){
+        if (!model.getBlackImgEdit().isEmpty()) {
             blackArr.addAll(model.getBlackImgEdit());
         }
 
         try {
-            if(null != model.getWhiteImg()){
+            if (null != model.getWhiteImg()) {
                 whiteImgA = commonController.uploadFiles(model.getWhiteImg());
                 List<String> s = Arrays.asList(whiteImgA.get("fileNames").toString().split(","));
                 whileArr.addAll(s);
 
             }
-            if(null !=  model.getBlackImg()){
+            if (null != model.getBlackImg()) {
                 blackImgA = commonController.uploadFiles(model.getBlackImg());
                 List<String> s = Arrays.asList(blackImgA.get("fileNames").toString().split(","));
                 blackArr.addAll(s);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return error(e.getMessage());
         }
 
@@ -213,10 +208,9 @@ public class SysGoodsController extends BaseController
      */
     @RequiresPermissions("system:goods:remove")
     @Log(title = "商品", businessType = BusinessType.DELETE)
-    @PostMapping( "/remove")
+    @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
-    {
+    public AjaxResult remove(String ids) {
         return toAjax(sysGoodsService.deleteSysGoodsByGoodsIds(ids));
     }
 }

@@ -114,7 +114,6 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
     @Override
     public void listByCurrentIp(Long goodsId, int index, HttpServletRequest request, HttpServletResponse response) {
 
-
         SysGoods sysGoods = selectSysGoodsByGoodsId(goodsId);
         if (null == sysGoods) {
             throw new ServiceException("商品不存在！！！");
