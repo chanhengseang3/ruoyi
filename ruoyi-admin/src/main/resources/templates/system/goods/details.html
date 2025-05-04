@@ -95,10 +95,10 @@
                            </div>`;
             $('.whiteImg').append(str);
 
-            let name = goodsId + "+" + i + "+" + i + ".jpg";
+            let name = goodsId + "+" + i + "+" + i;
 
             wcontent += `<p style="text-align: center" align="center">
-                    <img src="` + (lhost + Interf + btoa(name)) + `" />
+                    <img src="` + (lhost + Interf + btoa(name)) + `.jpg" />
                     </p >`;
         }
         $("#whiteContent").text(wcontent);
