@@ -34,7 +34,7 @@ public class IPConfig {
             log.info("getRemoteAddr:{}", ipAddress);
             if (ipAddress.equals("127.0.0.1")) {
                 //根据网卡取本机配置的IP
-                InetAddress inet = null;
+                InetAddress inet;
                 try {
                     inet = InetAddress.getLocalHost();
                     ipAddress = inet.getHostAddress();
@@ -83,11 +83,5 @@ public class IPConfig {
         } catch (IOException e) {
             return UNKNOWN;
         }
-    }
-
-    public static void main(String[] args) {
-        String ip = "188.241.80.39";
-        String address = getAddressByIp(ip);
-        log.info(address);
     }
 }

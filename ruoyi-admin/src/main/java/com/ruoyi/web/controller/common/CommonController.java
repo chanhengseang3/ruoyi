@@ -70,7 +70,7 @@ public class CommonController {
      */
     @PostMapping("/upload")
     @ResponseBody
-    public AjaxResult uploadFile(MultipartFile file) throws Exception {
+    public AjaxResult uploadFile(MultipartFile file) {
         try {
             // 上传文件路径
             String filePath = RuoYiConfig.getUploadPath();
@@ -97,10 +97,10 @@ public class CommonController {
         try {
             // 上传文件路径
             String filePath = RuoYiConfig.getUploadPath();
-            List<String> urls = new ArrayList<String>();
-            List<String> fileNames = new ArrayList<String>();
-            List<String> newFileNames = new ArrayList<String>();
-            List<String> originalFilenames = new ArrayList<String>();
+            List<String> urls = new ArrayList<>();
+            List<String> fileNames = new ArrayList<>();
+            List<String> newFileNames = new ArrayList<>();
+            List<String> originalFilenames = new ArrayList<>();
             for (MultipartFile file : files) {
 
                 // 上传并返回新文件名称
@@ -126,8 +126,7 @@ public class CommonController {
      * 本地资源通用下载
      */
     @GetMapping("/download/resource")
-    public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+    public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (!FileUtils.checkAllowDownload(resource)) {
                 throw new Exception(StringUtils.format("资源文件({})非法，不允许下载。 ", resource));
