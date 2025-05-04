@@ -1,9 +1,9 @@
 package com.ruoyi.web.controller.tool;
 
 import com.ruoyi.system.service.ISysGoodsService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,12 +18,12 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("kf")
+@RequiredArgsConstructor
 public class ImageController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ImageController.class);
 
-    @Autowired
-    private ISysGoodsService sysGoodsService;
+    private final ISysGoodsService sysGoodsService;
 
     @GetMapping("{name}")
     public ResponseEntity<String> listByCurrentIp(@PathVariable("name") String name,
