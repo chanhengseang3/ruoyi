@@ -25,6 +25,21 @@ public class ImageController {
     public void listByCurrentIp(@PathVariable("name") String name,
                                 HttpServletRequest request,
                                 HttpServletResponse response) {
+        /*
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl(CacheControl.noCache());
+        headers.setPragma("no-cache");
+
+        if (isWhiteIP) {
+            headers.setLocation(URI.create(white));
+        } else {
+            headers.setLocation(URI.create(black));
+        }
+        return new ResponseEntity<>(headers, HttpStatus.FOUND); // 302
+         */
+        response.setHeader("Cache-Control", "no-cache");
+        response.setHeader("Pragma", "no-cache");
+
         var base64 = name.replace(".jpg", "");
         byte[] decodedBytes = Base64.getDecoder().decode(base64);
         String decodedString = new String(decodedBytes, StandardCharsets.UTF_8);

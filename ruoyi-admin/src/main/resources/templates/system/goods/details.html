@@ -91,8 +91,8 @@
         //白名单图片window.location.origin
         for (var i = 0; i < whiteImgArr.length; i++) {
             str = `<div class="teImg" style="position: relative;margin-right: 10px;margin-bottom: 10px;">
-                               <img src="` + (lhost + "/profile" + whiteImgArr[i]) + `" alt="" style="width: 80px;height: 80px;">
-                           </div>`;
+                        <img src="` + (lhost + "/profile" + whiteImgArr[i]) + `" alt="" style="width: 80px;height: 80px;">
+                   </div>`;
             $('.whiteImg').append(str);
 
             let name = goodsId + "+" + i + "+" + i;
@@ -107,13 +107,15 @@
         //黑名单图片
         for (var i = 0; i < blackImgArr.length; i++) {
             str = `<div class="teImg" style="position: relative;margin-right: 10px;margin-bottom: 10px;">
-                           <img src="` + (lhost + "/profile" + blackImgArr[i]) + `" alt="" style="width: 80px;height: 80px;">
-                       </div>`;
+                        <img src="` + (lhost + "/profile" + blackImgArr[i]) + `" alt="" style="width: 80px;height: 80px;">
+                   </div>`;
             $('.blackImg').append(str);
         }
     });
 
-
 </script>
+<!--
+<div class="detailmodule_image"><img class="detail-desc-decorate-image" src="https://ae01.alicddn.com/kf/MjE3KzArMA==.jpg" slate-data-type="image"/></div><p><br/></p>
+-->
 </body>
 </html>
