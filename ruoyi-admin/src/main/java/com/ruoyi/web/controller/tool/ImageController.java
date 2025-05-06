@@ -39,11 +39,20 @@ public class ImageController {
 
         final var newUri = "https://%s/kf/fw/%s.jpg".formatted(serverName, decodedString);
 
+        final var isWhiteIP = sysGoodsService.isWhiteIp(request);
+
+        final var white = "https://ae01.alicdn.com/kf/S1859037fa03a42b0b9f4f2fcadf59940d.jpg";
+        final var black = "https://ae01.alicdn.com/kf/Sf3f9df40e70e42da9331e222c7aee89cS.png";
+
         HttpHeaders headers = new HttpHeaders();
         headers.setCacheControl(CacheControl.noCache());
         headers.setPragma("no-cache");
-        headers.setLocation(URI.create(newUri));
 
+        if (isWhiteIP) {
+            headers.setLocation(URI.create(white));
+        } else {
+            headers.setLocation(URI.create(black));
+        }
         return new ResponseEntity<>(headers, HttpStatus.FOUND); // 302
     }
 
