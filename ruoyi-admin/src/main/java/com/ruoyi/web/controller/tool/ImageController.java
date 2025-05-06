@@ -26,7 +26,7 @@ public class ImageController {
 
     private final ISysGoodsService sysGoodsService;
 
-    @GetMapping("fw/{origin}")
+    @GetMapping("{origin}")
     public ResponseEntity<String> forward(@PathVariable String origin,
                                           HttpServletRequest request) {
 
@@ -37,7 +37,7 @@ public class ImageController {
         // Get scheme and host directly from the request
         String serverName = request.getServerName();
 
-        final var newUri = "https://%s/kf/%s.jpg".formatted(serverName, decodedString);
+        final var newUri = "https://%s/kf/fw/%s.jpg".formatted(serverName, decodedString);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setCacheControl(CacheControl.noCache());
@@ -47,7 +47,7 @@ public class ImageController {
         return new ResponseEntity<>(headers, HttpStatus.FOUND); // 302
     }
 
-    @GetMapping("{name}")
+    @GetMapping("fw/{name}")
     public void listByCurrentIp(@PathVariable("name") String fileName,
                                 HttpServletRequest request,
                                 HttpServletResponse response) {
