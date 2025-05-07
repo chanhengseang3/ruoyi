@@ -1,59 +1,70 @@
 package com.ruoyi.common.core.domain.vo;
 
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 商品对象 sys_goods
- * 
+ *
  * @author ruoyi
  * @date 2022-07-25
  */
-public class SysGoodsModel
-{
+public class SysGoodsModel implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    /** 商品ID */
+    /**
+     * 商品ID
+     */
     private Long goodsId;
 
-    /** 商品名称 */
+    /**
+     * 商品名称
+     */
     @Excel(name = "商品名称")
     private String goodsName;
 
-    /** 白名单商品图片 */
-    @Excel(name = "白名单商品图片")
-    private List<MultipartFile> whiteImg;
+    /**
+     * 白名单商品链接
+     */
+    @Excel(name = "白名单商品链接")
+    private List<String> whiteUriLinks;
 
-    /** 黑名单商品图片 */
-    @Excel(name = "黑名单商品图片")
-    private List<MultipartFile> blackImg;
-    /** 白名单商品图片 */
-    @Excel(name = "白名单商品图片")
-    private List<String> whiteImgEdit;
+    /**
+     * 黑名单商品链接
+     */
+    @Excel(name = "黑名单商品链接")
+    private List<String> blackUriLinks;
 
-    /** 黑名单商品图片 */
-    @Excel(name = "黑名单商品图片")
-    private List<String> blackImgEdit;
+    /**
+     * 白名单商品链接(编辑用)
+     */
+    @Excel(name = "白名单商品链接")
+    private List<String> whiteUriLinksEdit;
 
-    public List<String> getWhiteImgEdit() {
-        return whiteImgEdit;
+    /**
+     * 黑名单商品链接(编辑用)
+     */
+    @Excel(name = "黑名单商品链接")
+    private List<String> blackUriLinksEdit;
+
+    public List<String> getWhiteUriLinksEdit() {
+        return whiteUriLinksEdit;
     }
 
-    public void setWhiteImgEdit(List<String> whiteImgEdit) {
-        this.whiteImgEdit = whiteImgEdit;
+    public void setWhiteUriLinksEdit(List<String> whiteUriLinksEdit) {
+        this.whiteUriLinksEdit = whiteUriLinksEdit;
     }
 
-    public List<String> getBlackImgEdit() {
-        return blackImgEdit;
+    public List<String> getBlackUriLinksEdit() {
+        return blackUriLinksEdit;
     }
 
-    public void setBlackImgEdit(List<String> blackImgEdit) {
-        this.blackImgEdit = blackImgEdit;
+    public void setBlackUriLinksEdit(List<String> blackUriLinksEdit) {
+        this.blackUriLinksEdit = blackUriLinksEdit;
     }
 
     public static long getSerialVersionUID() {
@@ -76,19 +87,19 @@ public class SysGoodsModel
         this.goodsName = goodsName;
     }
 
-    public List<MultipartFile> getWhiteImg() {
-        return whiteImg;
+    public List<String> getWhiteUriLinks() {
+        return whiteUriLinks;
     }
 
-    public void setWhiteImg(List<MultipartFile> whiteImg) {
-        this.whiteImg = whiteImg;
+    public void setWhiteUriLinks(List<String> whiteUriLinks) {
+        this.whiteUriLinks = whiteUriLinks;
     }
 
-    public List<MultipartFile> getBlackImg() {
-        return blackImg;
+    public List<String> getBlackUriLinks() {
+        return blackUriLinks;
     }
 
-    public void setBlackImg(List<MultipartFile> blackImg) {
-        this.blackImg = blackImg;
+    public void setBlackUriLinks(List<String> blackUriLinks) {
+        this.blackUriLinks = blackUriLinks;
     }
 }

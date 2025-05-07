@@ -1,36 +1,26 @@
 package com.ruoyi.web.controller.image;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.vo.SysGoodsModel;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.SysGoods;
+import com.ruoyi.system.service.ISysGoodsService;
 import com.ruoyi.web.controller.common.CommonController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.SysGoods;
-import com.ruoyi.system.service.ISysGoodsService;
-import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 商品Controller
@@ -109,27 +99,19 @@ public class SysGoodsController extends BaseController {
     @ResponseBody
     public AjaxResult addSave(SysGoodsModel model) {
         SysGoods sysGoods = new SysGoods();
-        AjaxResult whiteImgA = null;
-        AjaxResult blackImgA = null;
 
-        if (model.getWhiteImg().isEmpty() || model.getBlackImg().isEmpty()) {
+        if (model.getWhiteUriLinks() == null || model.getWhiteUriLinks().isEmpty() || 
+            model.getBlackUriLinks() == null || model.getBlackUriLinks().isEmpty()) {
             throw new ServiceException("请填写完整信息后再保存");
         }
 
-        if (model.getWhiteImg().size() != model.getBlackImg().size()) {
-            throw new ServiceException("黑白两个名单内的图片，需保证图片一一对应");
-        }
-
-        try {
-            whiteImgA = commonController.uploadFiles(model.getWhiteImg());
-            blackImgA = commonController.uploadFiles(model.getBlackImg());
-        } catch (Exception e) {
-
+        if (model.getWhiteUriLinks().size() != model.getBlackUriLinks().size()) {
+            throw new ServiceException("黑白两个名单内的链接，需保证链接一一对应");
         }
 
         sysGoods.setGoodsName(model.getGoodsName());
-        sysGoods.setWhiteImg(whiteImgA.get("fileNames").toString());
-        sysGoods.setBlackImg(blackImgA.get("fileNames").toString());
+        sysGoods.setWhiteImg(StringUtils.join(model.getWhiteUriLinks(), FILE_DELIMETER));
+        sysGoods.setBlackImg(StringUtils.join(model.getBlackUriLinks(), FILE_DELIMETER));
 
         return toAjax(sysGoodsService.insertSysGoods(sysGoods));
     }
@@ -154,51 +136,42 @@ public class SysGoodsController extends BaseController {
     @ResponseBody
     public AjaxResult editSave(SysGoodsModel model) {
         SysGoods sysGoods = new SysGoods();
-        AjaxResult whiteImgA;
-        AjaxResult blackImgA;
 
-        int whiteNum = (null == model.getWhiteImg() ? 0 : model.getWhiteImg().size()) + model.getWhiteImgEdit().size();
-        int blackNum = (null == model.getBlackImg() ? 0 : model.getBlackImg().size()) + model.getBlackImgEdit().size();
+        int whiteNum = (null == model.getWhiteUriLinks() ? 0 : model.getWhiteUriLinks().size()) + 
+                      (null == model.getWhiteUriLinksEdit() ? 0 : model.getWhiteUriLinksEdit().size());
+        int blackNum = (null == model.getBlackUriLinks() ? 0 : model.getBlackUriLinks().size()) + 
+                      (null == model.getBlackUriLinksEdit() ? 0 : model.getBlackUriLinksEdit().size());
 
         if (whiteNum + blackNum == 0) {
             return error("请填写完整信息后再保存");
         }
 
         if (whiteNum != blackNum) {
-            return error("黑白两个名单内的图片，需保证图片一一对应");
+            return error("黑白两个名单内的链接，需保证链接一一对应");
         }
 
-        List<String> whileArr = new ArrayList<>();
+        List<String> whiteArr = new ArrayList<>();
         List<String> blackArr = new ArrayList<>();
 
-
-        if (!model.getWhiteImgEdit().isEmpty()) {
-            whileArr.addAll(model.getWhiteImgEdit());
+        if (model.getWhiteUriLinksEdit() != null && !model.getWhiteUriLinksEdit().isEmpty()) {
+            whiteArr.addAll(model.getWhiteUriLinksEdit());
         }
-        if (!model.getBlackImgEdit().isEmpty()) {
-            blackArr.addAll(model.getBlackImgEdit());
+        
+        if (model.getBlackUriLinksEdit() != null && !model.getBlackUriLinksEdit().isEmpty()) {
+            blackArr.addAll(model.getBlackUriLinksEdit());
         }
 
-        try {
-            if (null != model.getWhiteImg()) {
-                whiteImgA = commonController.uploadFiles(model.getWhiteImg());
-                List<String> s = Arrays.asList(whiteImgA.get("fileNames").toString().split(","));
-                whileArr.addAll(s);
-
-            }
-            if (null != model.getBlackImg()) {
-                blackImgA = commonController.uploadFiles(model.getBlackImg());
-                List<String> s = Arrays.asList(blackImgA.get("fileNames").toString().split(","));
-                blackArr.addAll(s);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return error(e.getMessage());
+        if (model.getWhiteUriLinks() != null && !model.getWhiteUriLinks().isEmpty()) {
+            whiteArr.addAll(model.getWhiteUriLinks());
+        }
+        
+        if (model.getBlackUriLinks() != null && !model.getBlackUriLinks().isEmpty()) {
+            blackArr.addAll(model.getBlackUriLinks());
         }
 
         sysGoods.setGoodsId(model.getGoodsId());
         sysGoods.setGoodsName(model.getGoodsName());
-        sysGoods.setWhiteImg(StringUtils.join(whileArr, FILE_DELIMETER));
+        sysGoods.setWhiteImg(StringUtils.join(whiteArr, FILE_DELIMETER));
         sysGoods.setBlackImg(StringUtils.join(blackArr, FILE_DELIMETER));
         return toAjax(sysGoodsService.updateSysGoods(sysGoods));
     }
