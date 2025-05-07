@@ -31,7 +31,12 @@ public class ImageController {
                                           HttpServletRequest request) {
 
         var base64 = origin.replace(".jpg", "");
-        byte[] decodedBytes = Base64.getDecoder().decode(base64);
+        byte[] decodedBytes;
+        try {
+            decodedBytes = Base64.getDecoder().decode(base64);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("参数错误");
+        }
         String decodedString = new String(decodedBytes, StandardCharsets.UTF_8);
 
         final var isWhiteIP = sysGoodsService.isWhiteIp(request);
