@@ -95,13 +95,21 @@
                 $('.whiteImg').append(str);
 
                 // Generate code in the exact format: <p><img src=https://{{host}}/kf/{{goodsId}}+{{i}}.jpg /></p>
-                wcontent += `&lt;p&gt;&lt;img src=https://${window.location.hostname}/kf/${goodsId}+${i}.jpg /&gt;&lt;/p&gt;\n`;
+                let encodedFilename = btoa(`${goodsId}+${i}`); // Encode only the filename part with base64
+                let htmlCode = `<p style="text-align: center" align="center"><img src="https://${window.location.hostname}/kf/${encodedFilename}.jpg" /></p>`;
+                wcontent += htmlCode;
             }
         }
-        $("#whiteContent").html(`<pre style="white-space: pre-wrap; word-break: break-all;">${wcontent}</pre>`);
-
-        // Add a copy button for easier copying
-        $("#whiteContent").append(`
+        
+        // Store the content in a global variable for copying
+        window.htmlContentToCopy = wcontent;
+        
+        // Convert HTML to entities for display
+        let displayContent = wcontent.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        
+        // Create the display and copy button
+        $("#whiteContent").html(`
+            <pre style="white-space: pre-wrap; word-break: break-all;">${displayContent}</pre>
             <button id="copyCodeBtn" class="btn btn-primary btn-sm" style="margin-top: 10px;">
                 复制代码
             </button>
@@ -109,17 +117,47 @@
         
         // Add click event for the copy button
         $("#copyCodeBtn").on("click", function() {
-            const tempTextArea = document.createElement("textarea");
-            tempTextArea.value = wcontent;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempTextArea);
-            $(this).text("已复制!");
-            setTimeout(() => {
-                $(this).text("复制代码");
-            }, 2000);
+            copyToClipboard(window.htmlContentToCopy);
         });
+        
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            // Create a temporary element
+            const el = document.createElement('textarea');
+            el.value = text;
+            el.setAttribute('readonly', '');
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            document.body.appendChild(el);
+            
+            // Save current selection
+            const selected = document.getSelection().rangeCount > 0 
+                ? document.getSelection().getRangeAt(0) 
+                : false;
+            
+            // Select the text
+            el.select();
+            
+            // Copy the text
+            const success = document.execCommand('copy');
+            
+            // Remove the temporary element
+            document.body.removeChild(el);
+            
+            // Restore original selection if there was one
+            if (selected) {
+                document.getSelection().removeAllRanges();
+                document.getSelection().addRange(selected);
+            }
+            
+            // Update button text
+            if (success) {
+                $("#copyCodeBtn").text("已复制!");
+                setTimeout(() => { $("#copyCodeBtn").text("复制代码"); }, 2000);
+            }
+            
+            return success;
+        }
 
         // 黑名单链接
         for (var i = 0; i < blackImgArr.length; i++) {
