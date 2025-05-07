@@ -2,7 +2,6 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <th:block th:include="include :: header('新增商品')" />
-    <th:block th:include="include :: bootstrap-fileinput-css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
@@ -14,35 +13,37 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">白名单商品图片：</label>
+                <label class="col-sm-3 control-label">白名单商品链接：</label>
                 <div class="col-sm-8">
-                   <div style="width: 100%;display: flex;flex-wrap: wrap;">
-                       <div class="whiteImg" style="display: flex;flex-wrap: wrap;margin-bottom: 10px;"></div>
-                       <div style="width: 80px;height: 80px;font-size: 60px;display: flex;align-items: center;justify-content: center;position: relative;border: 1px solid #ccc;margin-bottom: 10px;">
-                           +
-                           <input class="whiteFile" name="file" type="file" multiple onchange="inputFile()" accept="image/*" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0">
+                   <div id="whiteLinksContainer">
+                       <div class="input-group" style="margin-bottom: 5px;">
+                           <input type="text" class="form-control white-link-input" placeholder="输入URI链接">
+                           <span class="input-group-btn">
+                               <button class="btn btn-default remove-link-btn" type="button" onclick="removeWhiteLink(this)">删除</button>
+                           </span>
                        </div>
                    </div>
+                   <button type="button" class="btn btn-primary btn-sm" onclick="addWhiteLinkField()" style="margin-top: 5px;">添加链接字段</button>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">黑名单商品图片：</label>
+                <label class="col-sm-3 control-label">黑名单商品链接：</label>
                 <div class="col-sm-8">
-
-                    <div style="width: 100%;display: flex;flex-wrap: wrap;">
-                        <div class="blackImg" style="display: flex;flex-wrap: wrap;margin-bottom: 10px;"></div>
-                        <div style="width: 80px;height: 80px;font-size: 60px;display: flex;align-items: center;justify-content: center;position: relative;border: 1px solid #ccc;margin-bottom: 10px;">
-                            +
-                            <input class="blackFile" name="file" type="file" multiple onchange="inputblackFile()" accept="image/*" style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0">
-                        </div>
-                    </div>
+                   <div id="blackLinksContainer">
+                       <div class="input-group" style="margin-bottom: 5px;">
+                           <input type="text" class="form-control black-link-input" placeholder="输入URI链接">
+                           <span class="input-group-btn">
+                               <button class="btn btn-default remove-link-btn" type="button" onclick="removeBlackLink(this)">删除</button>
+                           </span>
+                       </div>
+                   </div>
+                   <button type="button" class="btn btn-primary btn-sm" onclick="addBlackLinkField()" style="margin-top: 5px;">添加链接字段</button>
                 </div>
             </div>
         </form>
         <!--<h2>*注意：需同时设置两个名单内的图片，且保证图片一一对应</h2>-->
     </div>
     <th:block th:include="include :: footer" />
-    <th:block th:include="include :: bootstrap-fileinput-js" />
     <script th:inline="javascript">
         var prefix = ctx + "system/goods"
         $("#form-goods-add").validate({
@@ -50,25 +51,42 @@
         });
 
         function submitHandler() {
-            console.log(whiteArr)
-            console.log(blackArr)
             if ($.validate.form()) {
                 let formData = new FormData()
-                for(i in whiteArr){
-                    formData.append("whiteImg", whiteArr[i]);
+                
+                // Get all white links
+                let whiteLinks = [];
+                $('.white-link-input').each(function() {
+                    if ($(this).val().trim() !== '') {
+                        whiteLinks.push($(this).val().trim());
+                    }
+                });
+                
+                // Get all black links
+                let blackLinks = [];
+                $('.black-link-input').each(function() {
+                    if ($(this).val().trim() !== '') {
+                        blackLinks.push($(this).val().trim());
+                    }
+                });
+                
+                // Add to form data
+                for(let i = 0; i < whiteLinks.length; i++) {
+                    formData.append("whiteUriLinks", whiteLinks[i]);
                 }
-                for(i in blackArr){
-                    formData.append("blackImg", blackArr[i]);
+                
+                for(let i = 0; i < blackLinks.length; i++) {
+                    formData.append("blackUriLinks", blackLinks[i]);
                 }
-                formData.append('goodsName',$('#goodsName').val());
-                console.log("formData"+formData);
+                
+                formData.append('goodsName', $('#goodsName').val());
+                
                 $.ajax({
                     url: prefix + "/add",
                     type: "post",
-                    data:formData,
-                    uploadAsync: false,
-                    contentType:false,
-                    processData:false,
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     beforeSend: function () {
                         $.modal.loading("正在处理中，请稍候...");
                         $.modal.disable();
@@ -81,87 +99,40 @@
                         $.operate.successCallback(result);
                     }
                 })
-                // $.operate.save(prefix + "/add", form);
-                // $.operate.save(prefix + "/add", $('#form-goods-add').serialize());
             }
         }
-        var whiteArr = []
-        var blackArr = []
-        function delWhiteImg(val) {
-            console.log( $(val).parent().index())
-            whiteArr.splice($(val).parent().index(),1)
-            $(val).parent().remove()
+        
+        function addWhiteLinkField() {
+            let newField = `
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <input type="text" class="form-control white-link-input" placeholder="输入URI链接">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default remove-link-btn" type="button" onclick="removeWhiteLink(this)">删除</button>
+                    </span>
+                </div>
+            `;
+            $('#whiteLinksContainer').append(newField);
         }
-        function delBlackImg(val) {
-            blackArr.splice($(val).parent().index(),1)
-            $(val).parent().remove()
+        
+        function addBlackLinkField() {
+            let newField = `
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <input type="text" class="form-control black-link-input" placeholder="输入URI链接">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default remove-link-btn" type="button" onclick="removeBlackLink(this)">删除</button>
+                    </span>
+                </div>
+            `;
+            $('#blackLinksContainer').append(newField);
         }
-        function inputblackFile() {
-            let arr = $('.blackFile')[0].files;
-            let str =''
-            // let imgArr = []
-            for(let i = 0;i<arr.length;i++){
-                let fd = new FileReader()
-                blackArr.push(arr[i])
-                fd.readAsDataURL(arr[i])
-                //解析完毕事件
-                fd.onload = function(){
-                    // console.log(fd.result) //解析结果
-                    // img.src = fd.result
-                    // current = file
-                    // imgArr.push(fd.result)
-
-                    str =`<div class="teImg" style="position: relative;margin-right: 10px;margin-bottom: 10px;">
-                           <div onclick="delBlackImg(this)" style=" cursor: pointer;position: absolute;right: -10px;top: -10px;width: 20px;height: 20px;border-radius: 50%;display: flex;align-items: center;justify-content: center;background-color: red;color:#fff;">-</div>
-                           <img src="`+fd.result+`" alt="" style="width: 80px;height: 80px;">
-                       </div>`
-                    $('.blackImg').append(str)
-                }
-            }
-            // $('.blackFile').val('')
+        
+        function removeWhiteLink(button) {
+            $(button).closest('.input-group').remove();
         }
-        function inputFile(){
-            let arr = $('.whiteFile')[0].files;
-            let str ='';
-            // let imgArr = []
-            for(let i = 0;i<arr.length;i++){
-                let fd = new FileReader();
-                whiteArr.push(arr[i]);
-                fd.readAsDataURL(arr[i]);
-                //解析完毕事件
-                fd.onload = function(){
-                    // console.log(fd.result) //解析结果
-                    // img.src = fd.result
-                    // current = file
-                    // imgArr.push(fd.result)
-
-                    str =`<div class="teImg" style="position: relative;margin-right: 10px;margin-bottom: 10px;">
-                           <div onclick="delWhiteImg(this)" style="cursor: pointer;position: absolute;right: -10px;top: -10px;width: 20px;height: 20px;border-radius: 50%;display: flex;align-items: center;justify-content: center;background-color: red;color:#fff;">-</div>
-                           <img src="`+fd.result+`" alt="" style="width: 80px;height: 80px;">
-                       </div>`
-                    $('.whiteImg').append(str)
-                }
-            }
-            $('.whiteFile').val('')
-
+        
+        function removeBlackLink(button) {
+            $(button).closest('.input-group').remove();
         }
-        $(function () {
-            console.log($(".file-white-upload"))
-            $(".file-white-upload").fileinput({
-                uploadUrl: ctx + 'common/upload',
-                showUpload: false, //是否显示上传按钮
-                showRemove : true, //显示移除按钮
-                showPreview : false, //是否显示预览
-                showCaption: false,//是否显示标题
-                dropZoneEnabled: false,
-            }).on('filebatchuploadsuccess', function (event, data, previewId, index) {
-                console,log(data)
-                // $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
-            }).on('fileremoved', function (event, id, index) {
-                console,log(111)
-                // $("input[name='" + event.currentTarget.id + "']").val('')
-            })
-        })
     </script>
 </body>
 </html>
