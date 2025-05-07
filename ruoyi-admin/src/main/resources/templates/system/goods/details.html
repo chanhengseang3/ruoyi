@@ -94,14 +94,32 @@
                        </div>`;
                 $('.whiteImg').append(str);
 
-                let name = goodsId + "+" + i + "+" + i;
-
-                wcontent += `<p style="text-align: center" align="center">
-                        <img src="` + whiteImgArr[i] + `" />
-                        </p >`;
+                // Generate code in the exact format: <p><img src=https://{{host}}/kf/{{goodsId}}+{{i}}.jpg /></p>
+                wcontent += `&lt;p&gt;&lt;img src=https://${window.location.hostname}/kf/${goodsId}+${i}.jpg /&gt;&lt;/p&gt;\n`;
             }
         }
-        $("#whiteContent").html(wcontent);
+        $("#whiteContent").html(`<pre style="white-space: pre-wrap; word-break: break-all;">${wcontent}</pre>`);
+
+        // Add a copy button for easier copying
+        $("#whiteContent").append(`
+            <button id="copyCodeBtn" class="btn btn-primary btn-sm" style="margin-top: 10px;">
+                复制代码
+            </button>
+        `);
+        
+        // Add click event for the copy button
+        $("#copyCodeBtn").on("click", function() {
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = wcontent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+            $(this).text("已复制!");
+            setTimeout(() => {
+                $(this).text("复制代码");
+            }, 2000);
+        });
 
         // 黑名单链接
         for (var i = 0; i < blackImgArr.length; i++) {
