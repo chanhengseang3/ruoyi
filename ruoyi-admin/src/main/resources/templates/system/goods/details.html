@@ -79,8 +79,8 @@
     });
 
     $(function () {
-        let whiteImgArr = $('.whiteImgUrl').html().indexOf(',') != -1 ? $('.whiteImgUrl').html().split(',') : [$('.whiteImgUrl').html()];
-        let blackImgArr = $('.blackImgUrl').html().indexOf(',') != -1 ? $('.blackImgUrl').html().split(',') : [$('.blackImgUrl').html()];
+        let whiteImgArr = $('.whiteImgUrl').html().indexOf(',') !== -1 ? $('.whiteImgUrl').html().split(',') : [$('.whiteImgUrl').html()];
+        let blackImgArr = $('.blackImgUrl').html().indexOf(',') !== -1 ? $('.blackImgUrl').html().split(',') : [$('.blackImgUrl').html()];
         let str = '';
         let wcontent = '';
         const goodsId = $('#goodsId').val();
@@ -98,7 +98,7 @@
         
         // Generate HTML in the exact requested format
         let imageHtml = '<div class="detailmodule_image">';
-// 
+
         for (var i = 0; i < whiteImgArr.length; i++) {
             let encodedFilename = btoa(`${goodsId}+${i}`);
             imageHtml += `<img src="https://ae01.alicddn.com/kf/${encodedFilename}.jpg" class="detail-desc-decorate-image" >`;
