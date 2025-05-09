@@ -10,7 +10,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  *
  * @author ruoyi
  */
-@EnableCaching
+@EnableCaching(proxyTargetClass = true)
 @Configuration
 // 表示通过aop框架暴露该代理对象,AopContext能够访问
 @EnableAspectJAutoProxy(exposeProxy = true)

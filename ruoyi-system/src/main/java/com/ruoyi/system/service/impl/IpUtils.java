@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.config.IPConfig;
 import com.ruoyi.system.domain.SysCountry;
 import com.ruoyi.system.mapper.SysCountryMapper;
+import com.ruoyi.system.service.IpService;
 import com.ruoyi.system.service.RestTemplateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class IpUtils {
+public class IpUtils implements IpService {
 
     private static final String url = "http://v2.api.iphub.info/ip/";
     private static final Logger log = LoggerFactory.getLogger(IpUtils.class);
@@ -28,13 +30,21 @@ public class IpUtils {
     @Autowired
     private SysCountryMapper countryMapper;
 
+    @PostConstruct
+    public void init() {
+        log.info("IpUtils class: {}", this.getClass().getName());
+        log.info("IpUtils is proxied: {}", this.getClass().getName().contains("$Proxy"));
+    }
+
+    @Override
     @Cacheable(value = "isWhiteIp", key = "#ip")
     public boolean isWhiteIp(String ip) {
+        log.info("Cache MISS - Executing isWhiteIp method for IP: {}", ip);
         String getCountry = IPConfig.getAddressByIp(ip);
         log.info("IP is:{} Country is:{}", ip, getCountry);
         List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
         if (!countries.isEmpty() && countries.get(0).getCountryType() == 0) {
-            return  !isVpn(ip);
+            return !isVpn(ip);
         }
         return false;
     }
