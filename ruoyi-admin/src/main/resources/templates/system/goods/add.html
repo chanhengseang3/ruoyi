@@ -1,121 +1,131 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:include="include :: header('新增商品')" />
+    <th:block th:include="include :: header('新增商品')"/>
 </head>
 <body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-goods-add">
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">商品名称：</label>
-                <div class="col-sm-8">
-                    <input name="goodsName" id="goodsName" class="form-control" type="text" required>
-                </div>
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-goods-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">商品名称：</label>
+            <div class="col-sm-8">
+                <input name="goodsName" id="goodsName" class="form-control" type="text" required>
             </div>
-            <div class="form-group">
-                <label class="col-sm-12 control-label text-left" style="padding-left: 15px;">商品链接：</label>
-                <div class="col-sm-12">
-                   <div id="linkPairsContainer">
-                       <div class="link-pair-row" style="margin-bottom: 15px;">
-                           <div class="row">
-                               <div class="col-sm-6">
-                                   <div class="form-group" style="margin-bottom: 5px;">
-                                       <label class="control-label">白名单链接</label>
-                                       <input type="text" class="form-control white-link-input" placeholder="输入白名单URI链接" onchange="updateImagePreview(this)">
-                                       <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
-                                           <img style="max-width: 100%; max-height: 180px; display: none;">
-                                           <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center; border: 1px dashed #ddd;">
-                                               <span style="color: #999;">无图片</span>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                               <div class="col-sm-6">
-                                   <div class="form-group" style="margin-bottom: 5px;">
-                                       <div style="display: flex; justify-content: space-between; align-items: center;">
-                                           <label class="control-label">黑名单链接</label>
-                                           <button class="btn btn-default btn-xs remove-pair-btn" type="button" onclick="removeLinkPair(this)">删除</button>
-                                       </div>
-                                       <input type="text" class="form-control black-link-input" placeholder="输入黑名单URI链接" onchange="updateImagePreview(this)">
-                                       <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
-                                           <img style="max-width: 100%; max-height: 180px; display: none;">
-                                           <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center; border: 1px dashed #ddd;">
-                                               <span style="color: #999;">无图片</span>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
-                   <button type="button" class="btn btn-primary btn-sm" onclick="addLinkPair()" style="margin-top: 5px;">添加链接</button>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-12 control-label text-left" style="padding-left: 15px;">商品链接：</label>
+            <div class="col-sm-12">
+                <div id="linkPairsContainer">
+                    <div class="link-pair-row" style="margin-bottom: 15px;">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <label class="control-label">白名单链接</label>
+                                    <input type="text" class="form-control white-link-input"
+                                           placeholder="输入白名单URI链接" onchange="updateImagePreview(this)">
+                                    <div class="image-preview"
+                                         style="margin-top: 5px; max-width: 100%; position: relative;">
+                                        <img style="max-width: 100%; max-height: 180px; display: none;">
+                                        <div class="no-image-placeholder"
+                                             style="height: 180px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center; border: 1px dashed #ddd;">
+                                            <span style="color: #999;">无图片</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label class="control-label">黑名单链接</label>
+                                        <button class="btn btn-default btn-xs remove-pair-btn" type="button"
+                                                onclick="removeLinkPair(this)">删除
+                                        </button>
+                                    </div>
+                                    <input type="text" class="form-control black-link-input"
+                                           placeholder="输入黑名单URI链接" onchange="updateImagePreview(this)">
+                                    <div class="image-preview"
+                                         style="margin-top: 5px; max-width: 100%; position: relative;">
+                                        <img style="max-width: 100%; max-height: 180px; display: none;">
+                                        <div class="no-image-placeholder"
+                                             style="height: 180px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center; border: 1px dashed #ddd;">
+                                            <span style="color: #999;">无图片</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="addLinkPair()" style="margin-top: 5px;">
+                    添加链接
+                </button>
             </div>
-        </form>
-        <h5 class="text-muted">*注意：白名单链接与黑名单链接需一一对应</h5>
-    </div>
-    <th:block th:include="include :: footer" />
-    <script th:inline="javascript">
-        var prefix = ctx + "system/goods";
-        
-        $("#form-goods-add").validate({
-            focusCleanup: true
-        });
+        </div>
+    </form>
+    <h5 class="text-muted">*注意：白名单链接与黑名单链接需一一对应</h5>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var prefix = ctx + "system/goods";
 
-        function submitHandler() {
-            if ($.validate.form()) {
-                let formData = new FormData()
-                
-                // Get all white links
-                let whiteLinks = [];
-                $('.white-link-input').each(function() {
-                    if ($(this).val().trim() !== '') {
-                        whiteLinks.push($(this).val().trim());
-                    }
-                });
-                
-                // Get all black links
-                let blackLinks = [];
-                $('.black-link-input').each(function() {
-                    if ($(this).val().trim() !== '') {
-                        blackLinks.push($(this).val().trim());
-                    }
-                });
-                
-                // Add to form data
-                for(let i = 0; i < whiteLinks.length; i++) {
-                    formData.append("whiteUriLinks", whiteLinks[i]);
+    $("#form-goods-add").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            let formData = new FormData()
+
+            // Get all white links
+            let whiteLinks = [];
+            $('.white-link-input').each(function () {
+                if ($(this).val().trim() !== '') {
+                    whiteLinks.push($(this).val().trim());
                 }
-                
-                for(let i = 0; i < blackLinks.length; i++) {
-                    formData.append("blackUriLinks", blackLinks[i]);
+            });
+
+            // Get all black links
+            let blackLinks = [];
+            $('.black-link-input').each(function () {
+                if ($(this).val().trim() !== '') {
+                    blackLinks.push($(this).val().trim());
                 }
-                
-                formData.append('goodsName', $('#goodsName').val());
-                
-                $.ajax({
-                    url: prefix + "/add",
-                    type: "post",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function () {
-                        $.modal.loading("正在处理中，请稍候...");
-                        $.modal.disable();
-                    },
-                    success: function(result) {
-                        console.log(result)
-                        if (typeof callback == "function") {
-                            callback(result);
-                        }
-                        $.operate.successCallback(result);
-                    }
-                })
+            });
+
+            // Add to form data
+            for (let i = 0; i < whiteLinks.length; i++) {
+                formData.append("whiteUriLinks", whiteLinks[i]);
             }
+
+            for (let i = 0; i < blackLinks.length; i++) {
+                formData.append("blackUriLinks", blackLinks[i]);
+            }
+
+            formData.append('goodsName', $('#goodsName').val());
+
+            $.ajax({
+                url: prefix + "/add",
+                type: "post",
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $.modal.loading("正在处理中，请稍候...");
+                    $.modal.disable();
+                },
+                success: function (result) {
+                    console.log(result)
+                    if (typeof callback == "function") {
+                        callback(result);
+                    }
+                    $.operate.successCallback(result);
+                }
+            })
         }
-        
-        function addLinkPair() {
-            let newPair = `
+    }
+
+    function addLinkPair() {
+        let newPair = `
                 <div class="link-pair-row" style="margin-bottom: 15px;">
                     <div class="row">
                         <div class="col-sm-6">
@@ -148,31 +158,32 @@
                     </div>
                 </div>
             `;
-            $('#linkPairsContainer').append(newPair);
-        }
+        $('#linkPairsContainer').append(newPair);
+    }
 
-        function updateImagePreview(input) {
-            const url = $(input).val().trim();
-            const previewImg = $(input).closest('.form-group').find('.image-preview img');
-            const noImagePlaceholder = $(input).closest('.form-group').find('.no-image-placeholder');
-            
-            if (url) {
-                previewImg.attr('src', url);
-                previewImg.one('load', function() {
-                    $(this).css('display', 'block');
-                    noImagePlaceholder.css('display', 'none');
-                }).one('error', function() {
-                    $(this).css('display', 'none');
-                    noImagePlaceholder.css('display', 'flex');
-                }).attr('src', url); // Re-trigger load event
-            } else {
-                previewImg.css('display', 'none');
+    function updateImagePreview(input) {
+        const url = $(input).val().trim();
+        const previewImg = $(input).closest('.form-group').find('.image-preview img');
+        const noImagePlaceholder = $(input).closest('.form-group').find('.no-image-placeholder');
+
+        if (url) {
+            previewImg.attr('src', url);
+            previewImg.one('load', function () {
+                $(this).css('display', 'block');
+                noImagePlaceholder.css('display', 'none');
+            }).one('error', function () {
+                $(this).css('display', 'none');
                 noImagePlaceholder.css('display', 'flex');
-            }
+            }).attr('src', url); // Re-trigger load event
+        } else {
+            previewImg.css('display', 'none');
+            noImagePlaceholder.css('display', 'flex');
         }
-        function removeLinkPair(button) {
-            $(button).closest('.link-pair-row').remove();
-        }
-    </script>
+    }
+
+    function removeLinkPair(button) {
+        $(button).closest('.link-pair-row').remove();
+    }
+</script>
 </body>
 </html>

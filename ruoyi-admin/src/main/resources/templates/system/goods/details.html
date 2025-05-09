@@ -86,7 +86,7 @@
                 $('.whiteImg').append(str);
             }
         }
-        
+
         // Generate HTML in the exact requested format
         let imageHtml = '<div class="detailmodule_image">';
 
@@ -94,13 +94,13 @@
             let encodedFilename = btoa(`${goodsId}+${i}`);
             imageHtml += `<img src="https://ae01.alicddn.com/kf/${encodedFilename}.jpg" class="detail-desc-decorate-image" >`;
         }
-        
+
         imageHtml += '</div>';
         wcontent = imageHtml;
-        
+
         // Convert HTML to entities for display
         let displayContent = wcontent.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        
+
         // Create the display
         $("#whiteContent").html(`
             <pre style="white-space: pre-wrap; word-break: break-all;">${displayContent}</pre>
