@@ -13,39 +13,41 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">白名单商品链接：</label>
-                <div class="col-sm-8">
-                   <div id="whiteLinksContainer">
-                       <div class="input-group" style="margin-bottom: 5px;">
-                           <input type="text" class="form-control white-link-input" placeholder="输入URI链接">
-                           <span class="input-group-btn">
-                               <button class="btn btn-default remove-link-btn" type="button" onclick="removeWhiteLink(this)">删除</button>
-                           </span>
+                <label class="col-sm-12 control-label text-left" style="padding-left: 15px;">商品链接配对：</label>
+                <div class="col-sm-12">
+                   <div id="linkPairsContainer">
+                       <div class="link-pair-row" style="margin-bottom: 15px;">
+                           <div class="row">
+                               <div class="col-sm-6">
+                                   <div class="form-group" style="margin-bottom: 5px;">
+                                       <label class="control-label">白名单链接</label>
+                                       <input type="text" class="form-control white-link-input" placeholder="输入白名单URI链接">
+                                   </div>
+                               </div>
+                               <div class="col-sm-6">
+                                   <div class="form-group" style="margin-bottom: 5px;">
+                                       <label class="control-label">黑名单链接</label>
+                                       <div class="input-group">
+                                           <input type="text" class="form-control black-link-input" placeholder="输入黑名单URI链接">
+                                           <span class="input-group-btn">
+                                               <button class="btn btn-default remove-pair-btn" type="button" onclick="removeLinkPair(this)">删除</button>
+                                           </span>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
                        </div>
                    </div>
-                   <button type="button" class="btn btn-primary btn-sm" onclick="addWhiteLinkField()" style="margin-top: 5px;">添加链接字段</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">黑名单商品链接：</label>
-                <div class="col-sm-8">
-                   <div id="blackLinksContainer">
-                       <div class="input-group" style="margin-bottom: 5px;">
-                           <input type="text" class="form-control black-link-input" placeholder="输入URI链接">
-                           <span class="input-group-btn">
-                               <button class="btn btn-default remove-link-btn" type="button" onclick="removeBlackLink(this)">删除</button>
-                           </span>
-                       </div>
-                   </div>
-                   <button type="button" class="btn btn-primary btn-sm" onclick="addBlackLinkField()" style="margin-top: 5px;">添加链接字段</button>
+                   <button type="button" class="btn btn-primary btn-sm" onclick="addLinkPair()" style="margin-top: 5px;">添加链接配对</button>
                 </div>
             </div>
         </form>
-        <!--<h2>*注意：需同时设置两个名单内的图片，且保证图片一一对应</h2>-->
+        <h5 class="text-muted">*注意：白名单链接与黑名单链接需一一对应</h5>
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var prefix = ctx + "system/goods"
+        var prefix = ctx + "system/goods";
+        
         $("#form-goods-add").validate({
             focusCleanup: true
         });
@@ -102,36 +104,50 @@
             }
         }
         
-        function addWhiteLinkField() {
-            let newField = `
-                <div class="input-group" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control white-link-input" placeholder="输入URI链接">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default remove-link-btn" type="button" onclick="removeWhiteLink(this)">删除</button>
-                    </span>
+        function addLinkPair() {
+            // Open a modal to get the new link values
+            $.modal.open('添加新的链接配对', prefix + '/addLinkPairModal', '800', '500');
+        }
+        
+        // Function to be called from the modal when adding a new pair
+        function confirmAddLinkPair(whiteLink, blackLink) {
+            if (whiteLink || blackLink) {
+                addLinkPairWithValues(whiteLink, blackLink);
+                $.modal.close();
+            } else {
+                $.modal.alertWarning('请至少输入一个链接');
+            }
+        }
+        
+        function addLinkPairWithValues(whiteValue, blackValue) {
+            let newPair = `
+                <div class="link-pair-row" style="margin-bottom: 15px;">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <label class="control-label">白名单链接</label>
+                                <input type="text" class="form-control white-link-input" value="${whiteValue || ''}" placeholder="输入白名单URI链接">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <label class="control-label">黑名单链接</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control black-link-input" value="${blackValue || ''}" placeholder="输入黑名单URI链接">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default remove-pair-btn" type="button" onclick="removeLinkPair(this)">删除</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
-            $('#whiteLinksContainer').append(newField);
+            $('#linkPairsContainer').append(newPair);
         }
         
-        function addBlackLinkField() {
-            let newField = `
-                <div class="input-group" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control black-link-input" placeholder="输入URI链接">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default remove-link-btn" type="button" onclick="removeBlackLink(this)">删除</button>
-                    </span>
-                </div>
-            `;
-            $('#blackLinksContainer').append(newField);
-        }
-        
-        function removeWhiteLink(button) {
-            $(button).closest('.input-group').remove();
-        }
-        
-        function removeBlackLink(button) {
-            $(button).closest('.input-group').remove();
+        function removeLinkPair(button) {
+            $(button).closest('.link-pair-row').remove();
         }
     </script>
 </body>
