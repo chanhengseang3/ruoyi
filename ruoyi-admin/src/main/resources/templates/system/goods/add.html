@@ -172,44 +172,6 @@
                 noImagePlaceholder.css('display', 'flex');
             }
         }
-        
-        function addLinkPairWithValues(whiteLink, blackLink) {
-            let newPair = `
-                <div class="link-pair-row" style="margin-bottom: 15px;">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group" style="margin-bottom: 5px;">
-                                <label class="control-label">白名单链接</label>
-                                <input type="text" class="form-control white-link-input" placeholder="输入白名单URI链接" value="${whiteLink || ''}" onchange="updateImagePreview(this)">
-                                <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
-                                    <img src="${whiteLink || ''}" style="max-width: 100%; max-height: 180px; display: ${whiteLink ? 'block' : 'none'};">
-                                    <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: ${whiteLink ? 'none' : 'flex'}; align-items: center; justify-content: center; border: 1px dashed #ddd;">
-                                        <span style="color: #999;">无图片</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group" style="margin-bottom: 5px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <label class="control-label">黑名单链接</label>
-                                    <button class="btn btn-default btn-xs remove-pair-btn" type="button" onclick="removeLinkPair(this)">删除</button>
-                                </div>
-                                <input type="text" class="form-control black-link-input" placeholder="输入黑名单URI链接" value="${blackLink || ''}" onchange="updateImagePreview(this)">
-                                <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
-                                    <img src="${blackLink || ''}" style="max-width: 100%; max-height: 180px; display: ${blackLink ? 'block' : 'none'};">
-                                    <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: ${blackLink ? 'none' : 'flex'}; align-items: center; justify-content: center; border: 1px dashed #ddd;">
-                                        <span style="color: #999;">无图片</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#linkPairsContainer').append(newPair);
-        }
-        
         function removeLinkPair(button) {
             $(button).closest('.link-pair-row').remove();
         }
