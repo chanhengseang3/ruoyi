@@ -174,9 +174,11 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
 
     private boolean isVpn(String ip) {
         final var header = Map.of("X-Key", xKey);
+        log.info("IP is:{}", ip);
         ResponseEntity<String> responseEntity = RestTemplateService.get(url + ip, header);
         if (responseEntity.getStatusCodeValue() == 200) {
             final var body = responseEntity.getBody();
+            log.info("body is:{}", body);
             final var json = JSONObject.parseObject(body);
             return json.getIntValue("block") == 1;
         }
