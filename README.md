@@ -1,12 +1,12 @@
-# Ruoyi Goods Management System
+# Ruoyi Image Management System
 
-A comprehensive goods management system with paired white/black list link management, built with Java and MySQL.
+A comprehensive image management system with paired white/black list link management, built with Java and MySQL.
 
 ## Overview
-Ruoyi is a goods management system designed to manage products with paired white list and black list links. It features side-by-side display and editing of link pairs, visual image previews with placeholders, and one-to-one relationship enforcement between link pairs.
+Ruoyi is an image management system designed to manage images with paired white list and black list links. It features side-by-side display and editing of link pairs, visual image previews with placeholders, and one-to-one relationship enforcement between link pairs.
 
 ## Features
-- Manage products with paired white list and black list links
+- Manage images with paired white list and black list links
 - Side-by-side display and editing of link pairs
 - Visual image previews with placeholders
 - One-to-one relationship enforcement between link pairs
