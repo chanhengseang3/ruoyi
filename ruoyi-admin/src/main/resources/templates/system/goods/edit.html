@@ -15,22 +15,13 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">白名单商品链接：</label>
+                <label class="col-sm-3 control-label">商品链接：</label>
                 <div class="col-sm-8">
-                   <div id="whiteLinksContainer">
-                       <!-- Existing white links will be loaded here via JavaScript -->
+                   <div id="linkPairsContainer">
+                       <!-- Existing link pairs will be loaded here via JavaScript -->
                    </div>
-                   <button type="button" class="btn btn-primary btn-sm" onclick="addWhiteLinkField()" style="margin-top: 5px;">添加链接字段</button>
+                   <button type="button" class="btn btn-primary btn-sm" onclick="addLinkPair()" style="margin-top: 5px;">添加链接</button>
                    <div class="whiteImgUrl" style="display: none;">[[*{whiteImg}]]</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">黑名单商品链接：</label>
-                <div class="col-sm-8">
-                   <div id="blackLinksContainer">
-                       <!-- Existing black links will be loaded here via JavaScript -->
-                   </div>
-                   <button type="button" class="btn btn-primary btn-sm" onclick="addBlackLinkField()" style="margin-top: 5px;">添加链接字段</button>
                    <div class="blackImgUrl" style="display: none;">[[*{blackImg}]]</div>
                 </div>
             </div>
@@ -47,190 +38,179 @@
         $(function () {
             let whiteImgArr = $('.whiteImgUrl').html().indexOf(',')!=-1?$('.whiteImgUrl').html().split(','):[$('.whiteImgUrl').html()];
             let blackImgArr = $('.blackImgUrl').html().indexOf(',')!=-1?$('.blackImgUrl').html().split(','):[$('.blackImgUrl').html()];
-            let str ='';
-            let lhost=window.location.protocol+'//'+window.location.hostname+':'+window.location.port;
             
-            // Load existing white links - use the same arrays as the images
-            for (var i = 0; i < whiteImgArr.length; i++) {
-                if (whiteImgArr[i] && whiteImgArr[i].trim() !== '') {
-                    addWhiteLinkWithValue(whiteImgArr[i]);
+            // Load existing link pairs
+            for (var i = 0; i < Math.max(whiteImgArr.length, blackImgArr.length); i++) {
+                let whiteValue = whiteImgArr[i] && whiteImgArr[i].trim() !== '' ? whiteImgArr[i] : '';
+                let blackValue = blackImgArr[i] && blackImgArr[i].trim() !== '' ? blackImgArr[i] : '';
+                
+                if (whiteValue || blackValue) {
+                    addLinkPairWithValue(whiteValue, blackValue);
                 }
             }
             
-            // Load existing black links - use the same arrays as the images
-            for (var i = 0; i < blackImgArr.length; i++) {
-                if (blackImgArr[i] && blackImgArr[i].trim() !== '') {
-                    addBlackLinkWithValue(blackImgArr[i]);
-                }
-            }
-            
-            // Add at least one empty field if none exist
-            if (whiteImgArr.length === 0 || (whiteImgArr.length === 1 && whiteImgArr[0].trim() === '')) {
-                addWhiteLinkField();
-            }
-            
-            if (blackImgArr.length === 0 || (blackImgArr.length === 1 && blackImgArr[0].trim() === '')) {
-                addBlackLinkField();
+            // Add at least one empty pair if none exist
+            if ((whiteImgArr.length === 0 || (whiteImgArr.length === 1 && whiteImgArr[0].trim() === '')) &&
+                (blackImgArr.length === 0 || (blackImgArr.length === 1 && blackImgArr[0].trim() === ''))) {
+                addLinkPair();
             }
         });
 
+        function addLinkPairWithValue(whiteValue, blackValue) {
+            let newPair = `
+                <div class="link-pair-row" style="margin-bottom: 15px;">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <label class="control-label">白名单链接</label>
+                                <input type="text" class="form-control white-link-input" placeholder="输入白名单URI链接" value="${whiteValue || ''}" onchange="updateImagePreview(this)">
+                                <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
+                                    <img src="${whiteValue || ''}" style="max-width: 100%; max-height: 180px; display: ${whiteValue ? 'block' : 'none'};">
+                                    <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: ${whiteValue ? 'none' : 'flex'}; align-items: center; justify-content: center; border: 1px dashed #ddd;">
+                                        <span style="color: #999;">无图片</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label class="control-label">黑名单链接</label>
+                                    <button class="btn btn-default btn-xs remove-pair-btn" type="button" onclick="removeLinkPair(this)">删除</button>
+                                </div>
+                                <input type="text" class="form-control black-link-input" placeholder="输入黑名单URI链接" value="${blackValue || ''}" onchange="updateImagePreview(this)">
+                                <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
+                                    <img src="${blackValue || ''}" style="max-width: 100%; max-height: 180px; display: ${blackValue ? 'block' : 'none'};">
+                                    <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: ${blackValue ? 'none' : 'flex'}; align-items: center; justify-content: center; border: 1px dashed #ddd;">
+                                        <span style="color: #999;">无图片</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $('#linkPairsContainer').append(newPair);
+        }
+        
+        function addLinkPair() {
+            let newPair = `
+                <div class="link-pair-row" style="margin-bottom: 15px;">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <label class="control-label">白名单链接</label>
+                                <input type="text" class="form-control white-link-input" placeholder="输入白名单URI链接" onchange="updateImagePreview(this)">
+                                <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
+                                    <img style="max-width: 100%; max-height: 180px; display: none;">
+                                    <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center; border: 1px dashed #ddd;">
+                                        <span style="color: #999;">无图片</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label class="control-label">黑名单链接</label>
+                                    <button class="btn btn-default btn-xs remove-pair-btn" type="button" onclick="removeLinkPair(this)">删除</button>
+                                </div>
+                                <input type="text" class="form-control black-link-input" placeholder="输入黑名单URI链接" onchange="updateImagePreview(this)">
+                                <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
+                                    <img style="max-width: 100%; max-height: 180px; display: none;">
+                                    <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center; border: 1px dashed #ddd;">
+                                        <span style="color: #999;">无图片</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $('#linkPairsContainer').append(newPair);
+        }
+        
+        function updateImagePreview(input) {
+            const url = $(input).val().trim();
+            const previewImg = $(input).closest('div').find('.image-preview img');
+            const noImagePlaceholder = $(input).closest('div').find('.no-image-placeholder');
+            
+            if (url) {
+                previewImg.attr('src', url);
+                previewImg.on('load', function() {
+                    $(this).css('display', 'block');
+                    noImagePlaceholder.css('display', 'none');
+                });
+                
+                previewImg.on('error', function() {
+                    $(this).css('display', 'none');
+                    noImagePlaceholder.css('display', 'flex');
+                });
+            } else {
+                previewImg.css('display', 'none');
+                noImagePlaceholder.css('display', 'flex');
+            }
+        }
+        
+        function removeLinkPair(button) {
+            $(button).closest('.link-pair-row').remove();
+        }
+        
         function submitHandler() {
             if ($.validate.form()) {
                 let formData = new FormData()
                 formData.append('goodsId',$('#goodsId').val());
                 formData.append('goodsName',$('#goodsName').val());
 
-                // Get all white links
-                let whiteLinks = [];
+                // Get all white and black links
+                let whiteUriLinksEdit = [];
+                let blackUriLinksEdit = [];
+                
                 $('.white-link-input').each(function() {
-                    if ($(this).val().trim() !== '') {
-                        whiteLinks.push($(this).val().trim());
+                    let value = $(this).val().trim();
+                    if (value !== '') {
+                        whiteUriLinksEdit.push(value);
                     }
                 });
                 
-                // Get all black links
-                let blackLinks = [];
                 $('.black-link-input').each(function() {
-                    if ($(this).val().trim() !== '') {
-                        blackLinks.push($(this).val().trim());
+                    let value = $(this).val().trim();
+                    if (value !== '') {
+                        blackUriLinksEdit.push(value);
                     }
                 });
                 
                 // Add to form data
-                for(let i = 0; i < whiteLinks.length; i++) {
-                    formData.append("whiteUriLinks", whiteLinks[i]);
+                for(let i = 0; i < whiteUriLinksEdit.length; i++) {
+                    formData.append("whiteUriLinksEdit", whiteUriLinksEdit[i]);
                 }
                 
-                for(let i = 0; i < blackLinks.length; i++) {
-                    formData.append("blackUriLinks", blackLinks[i]);
+                for(let i = 0; i < blackUriLinksEdit.length; i++) {
+                    formData.append("blackUriLinksEdit", blackUriLinksEdit[i]);
                 }
                 
                 $.ajax({
                     url: prefix + "/edit",
                     type: "post",
-                    data:formData,
+                    data: formData,
                     uploadAsync: false,
-                    contentType:false,
-                    processData:false,
+                    contentType: false,
+                    processData: false,
                     beforeSend: function () {
                         $.modal.loading("正在处理中，请稍候...");
                         $.modal.disable();
                     },
                     success: function(result) {
-                        console.log(result)
                         if (typeof callback == "function") {
                             callback(result);
                         }
                         $.operate.successCallback(result);
                     },
-                    error : function(request) {
+                    error: function(request) {
                         $.modal.alertError("系统错误");
                     }
-                })
-            }
-        }
-
-        function addWhiteLinkWithValue(value) {
-            let newField = `
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <div style="display: flex; flex-direction: column;">
-                        <div class="input-group">
-                            <input type="text" class="form-control white-link-input" placeholder="输入URI链接" value="${value}" onchange="updateImagePreview(this)">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default remove-link-btn" type="button" onclick="removeWhiteLink(this)">删除</button>
-                            </span>
-                        </div>
-                        <div class="image-preview" style="margin-top: 5px; max-width: 200px;">
-                            <img src="${value}" onerror="this.onerror=null; this.src=''; this.alt='无法加载图片'; this.style.display='none';" style="max-width: 100%; max-height: 100px; display: ${value ? 'block' : 'none'};">
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#whiteLinksContainer').append(newField);
-        }
-        
-        function addWhiteLinkField() {
-            let newField = `
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <div style="display: flex; flex-direction: column;">
-                        <div class="input-group">
-                            <input type="text" class="form-control white-link-input" placeholder="输入URI链接" onchange="updateImagePreview(this)">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default remove-link-btn" type="button" onclick="removeWhiteLink(this)">删除</button>
-                            </span>
-                        </div>
-                        <div class="image-preview" style="margin-top: 5px; max-width: 200px;">
-                            <img style="max-width: 100%; max-height: 100px; display: none;">
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#whiteLinksContainer').append(newField);
-        }
-        
-        function addBlackLinkWithValue(value) {
-            let newField = `
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <div style="display: flex; flex-direction: column;">
-                        <div class="input-group">
-                            <input type="text" class="form-control black-link-input" placeholder="输入URI链接" value="${value}" onchange="updateImagePreview(this)">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default remove-link-btn" type="button" onclick="removeBlackLink(this)">删除</button>
-                            </span>
-                        </div>
-                        <div class="image-preview" style="margin-top: 5px; max-width: 200px;">
-                            <img src="${value}" onerror="this.onerror=null; this.src=''; this.alt='无法加载图片'; this.style.display='none';" style="max-width: 100%; max-height: 100px; display: ${value ? 'block' : 'none'};">
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#blackLinksContainer').append(newField);
-        }
-        
-        function addBlackLinkField() {
-            let newField = `
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <div style="display: flex; flex-direction: column;">
-                        <div class="input-group">
-                            <input type="text" class="form-control black-link-input" placeholder="输入URI链接" onchange="updateImagePreview(this)">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default remove-link-btn" type="button" onclick="removeBlackLink(this)">删除</button>
-                            </span>
-                        </div>
-                        <div class="image-preview" style="margin-top: 5px; max-width: 200px;">
-                            <img style="max-width: 100%; max-height: 100px; display: none;">
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#blackLinksContainer').append(newField);
-        }
-        
-        function updateImagePreview(input) {
-            const url = $(input).val().trim();
-            const previewImg = $(input).closest('.input-group').next('.image-preview').find('img');
-            
-            if (url) {
-                previewImg.attr('src', url);
-                previewImg.on('load', function() {
-                    $(this).css('display', 'block');
                 });
-                previewImg.on('error', function() {
-                    $(this).css('display', 'none');
-                    $(this).attr('alt', '无法加载图片');
-                });
-            } else {
-                previewImg.css('display', 'none');
-                previewImg.attr('src', '');
             }
-        }
-        
-        function removeWhiteLink(button) {
-            $(button).closest('.input-group').parent().parent().remove();
-        }
-        
-        function removeBlackLink(button) {
-            $(button).closest('.input-group').parent().parent().remove();
         }
     </script>
 </body>
