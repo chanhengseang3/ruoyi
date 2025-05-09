@@ -30,9 +30,9 @@ public class ImageController {
     public ResponseEntity<String> forward(@PathVariable String origin,
                                           HttpServletRequest request) {
         String base64 = "";
-        if(!origin.endsWith(".jpg_640x640q90.jpg")) {
+        if(origin.endsWith(".jpg_640x640q90.jpg")) {
             base64 = origin.replace( ".jpg_640x640q90.jpg","");
-        }else if (!origin.endsWith(".jpg")) {
+        }else if (origin.endsWith(".jpg")) {
             base64 = origin.replace(".jpg", "");
         }
         byte[] decodedBytes;
