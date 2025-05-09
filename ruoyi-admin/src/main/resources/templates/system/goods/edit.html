@@ -132,20 +132,18 @@
         
         function updateImagePreview(input) {
             const url = $(input).val().trim();
-            const previewImg = $(input).closest('div').find('.image-preview img');
-            const noImagePlaceholder = $(input).closest('div').find('.no-image-placeholder');
+            const previewImg = $(input).closest('.form-group').find('.image-preview img');
+            const noImagePlaceholder = $(input).closest('.form-group').find('.no-image-placeholder');
             
             if (url) {
                 previewImg.attr('src', url);
-                previewImg.on('load', function() {
+                previewImg.one('load', function() {
                     $(this).css('display', 'block');
                     noImagePlaceholder.css('display', 'none');
-                });
-                
-                previewImg.on('error', function() {
+                }).one('error', function() {
                     $(this).css('display', 'none');
                     noImagePlaceholder.css('display', 'flex');
-                });
+                }).attr('src', url); // Re-trigger load event
             } else {
                 previewImg.css('display', 'none');
                 noImagePlaceholder.css('display', 'flex');
