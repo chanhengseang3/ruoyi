@@ -63,7 +63,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" style="margin-bottom: 5px;">
                                 <label class="control-label">白名单链接</label>
-<!--                                <input type="text" disabled class="form-control white-link-input" placeholder="输入白名单URI链接" value="${whiteValue || ''}" onchange="updateImagePreview(this)">-->
+                                <input type="hidden" class="white-link-input" value="${whiteValue || ''}">
                                 <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
                                     <img src="${whiteValue || ''}" style="max-width: 100%; max-height: 180px; display: ${whiteValue ? 'block' : 'none'};">
                                     <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: ${whiteValue ? 'none' : 'flex'}; align-items: center; justify-content: center; border: 1px dashed #ddd;">
@@ -78,7 +78,7 @@
                                     <label class="control-label">黑名单链接</label>
                                     <button class="btn btn-default btn-xs remove-pair-btn" type="button" onclick="removeLinkPair(this)">删除</button>
                                 </div>
-<!--                                <input type="text" class="form-control black-link-input" placeholder="输入黑名单URI链接" value="${blackValue || ''}" onchange="updateImagePreview(this)">-->
+                                <input type="hidden" class="black-link-input" value="${blackValue || ''}">
                                 <div class="image-preview" style="margin-top: 5px; max-width: 100%; position: relative;">
                                     <img src="${blackValue || ''}" style="max-width: 100%; max-height: 180px; display: ${blackValue ? 'block' : 'none'};">
                                     <div class="no-image-placeholder" style="height: 180px; background-color: #f5f5f5; display: ${blackValue ? 'none' : 'flex'}; align-items: center; justify-content: center; border: 1px dashed #ddd;">
