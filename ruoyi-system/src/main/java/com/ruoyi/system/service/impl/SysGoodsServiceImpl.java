@@ -17,6 +17,7 @@ import com.ruoyi.system.service.RestTemplateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,6 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
     private static final Base64.Decoder decoder = Base64.getDecoder();
 
     private static final String url = "http://v2.api.iphub.info/ip/";
-    private static final String xkey = "MjgxNTk6NmN3T3ZJY0JpWUlkak5CTEc0MlppRE5xRVRESW95RTU=";
 
     @Autowired
     private SysGoodsMapper sysGoodsMapper;
@@ -59,6 +59,9 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
     private SysWhiteIpMapper ipMapper;
     @Autowired
     private SysCountryMapper countryMapper;
+
+    @Value("${user.xkey}")
+    private String xKey;
 
     /**
      * 查询商品
@@ -170,7 +173,7 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
     }
 
     private boolean isVpn(String ip) {
-        final var header = Map.of("X-Key", xkey);
+        final var header = Map.of("X-Key", xKey);
         ResponseEntity<String> responseEntity = RestTemplateService.get(url + ip, header);
         if (responseEntity.getStatusCodeValue() == 200) {
             final var body = responseEntity.getBody();
