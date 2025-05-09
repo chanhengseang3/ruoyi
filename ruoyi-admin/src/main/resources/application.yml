@@ -84,6 +84,9 @@ spring:
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
+  # Add explicit cache configuration
+  cache:
+    type: simple
   profiles: 
     active: druid
   # 文件上传

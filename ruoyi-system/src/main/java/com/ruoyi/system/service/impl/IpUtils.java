@@ -14,7 +14,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +28,6 @@ public class IpUtils implements IpService {
 
     @Autowired
     private SysCountryMapper countryMapper;
-
-    @PostConstruct
-    public void init() {
-        log.info("IpUtils class: {}", this.getClass().getName());
-        log.info("IpUtils is proxied: {}", this.getClass().getName().contains("$Proxy"));
-    }
 
     @Override
     @Cacheable(value = "isWhiteIp", key = "#ip")
