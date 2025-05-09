@@ -29,8 +29,12 @@ public class ImageController {
     @GetMapping("{origin}")
     public ResponseEntity<String> forward(@PathVariable String origin,
                                           HttpServletRequest request) {
-
-        var base64 = origin.replace(".jpg", "");
+        String base64 = "";
+        if(!origin.endsWith(".jpg_640x640q90.jpg")) {
+            base64 = origin.replace( ".jpg_640x640q90.jpg","");
+        }else if (!origin.endsWith(".jpg")) {
+            base64 = origin.replace(".jpg", "");
+        }
         byte[] decodedBytes;
         try {
             decodedBytes = Base64.getDecoder().decode(base64);
