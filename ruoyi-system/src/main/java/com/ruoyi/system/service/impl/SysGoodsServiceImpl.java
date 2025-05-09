@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.config.IPConfig;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.core.text.Convert;
@@ -12,6 +13,7 @@ import com.ruoyi.system.mapper.SysCountryMapper;
 import com.ruoyi.system.mapper.SysGoodsMapper;
 import com.ruoyi.system.mapper.SysWhiteIpMapper;
 import com.ruoyi.system.service.ISysGoodsService;
+import com.ruoyi.system.service.RestTemplateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品Service业务层处理
@@ -46,6 +49,9 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
 
     private static final Logger log = LoggerFactory.getLogger(SysGoodsServiceImpl.class);
     private static final Base64.Decoder decoder = Base64.getDecoder();
+
+    private static final String url = "http://v2.api.iphub.info/ip/";
+    private static final String xkey = "MjgxNTk6NmN3T3ZJY0JpWUlkak5CTEc0MlppRE5xRVRESW95RTU=";
 
     @Autowired
     private SysGoodsMapper sysGoodsMapper;
@@ -156,10 +162,22 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
             log.info("IP is:{} Country is:{}", ip, getCountry);
             List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
             if (!countries.isEmpty() && countries.get(0).getCountryType() == 0) {
-                isWhite = true;
+                isWhite = !isVpn(ip);
             }
         }
+
         return isWhite;
+    }
+
+    private boolean isVpn(String ip) {
+        final var header = Map.of("X-Key", xkey);
+        ResponseEntity<String> responseEntity = RestTemplateService.get(url + ip, header);
+        if (responseEntity.getStatusCodeValue() == 200) {
+            final var body = responseEntity.getBody();
+            final var json = JSONObject.parseObject(body);
+            return json.getIntValue("block") == 1;
+        }
+        return false;
     }
 
     @Override
@@ -208,28 +226,6 @@ public class SysGoodsServiceImpl implements ISysGoodsService {
         } catch (Exception ex) {
             log.error("fail to read/write image", ex);
             throw new RuntimeException("cannot read image");
-        }
-    }
-
-    public static boolean GenerateImage(String imgStr, OutputStream out) {
-        if (imgStr == null) // 图像数据为空
-            return false;
-        var decoder = Base64.getDecoder();
-        try {
-            // Base64解码
-            byte[] b = decoder.decode(imgStr);
-            for (int i = 0; i < b.length; ++i) {
-                if (b[i] < 0) {
-                    b[i] += 256;
-                }
-            }
-
-            out.write(b);
-            out.flush();
-            out.close();
-            return true;
-        } catch (Exception e) {
-            return false;
         }
     }
 
