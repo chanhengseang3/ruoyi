@@ -14,28 +14,22 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label">白名单商品链接：</label>
+            <label class="col-sm-3 control-label">商品链接：</label>
             <div class="col-sm-8">
-                <div style="width: 100%;display: flex;flex-wrap: wrap;">
-                    <div class="whiteImg" style="display: flex;flex-wrap: wrap;margin-bottom: 10px;">
-
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="control-label">白名单</label>
+                        <div class="whiteImg" style="display: flex; flex-wrap: wrap; margin-bottom: 10px;"></div>
+                        <div class="whiteImgUrl" style="display: none;">[[*{whiteImg}]]</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="control-label">黑名单</label>
+                        <div class="blackImg" style="display: flex; flex-wrap: wrap; margin-bottom: 10px;"></div>
+                        <div class="blackImgUrl" style="display: none;">[[*{blackImg}]]</div>
                     </div>
                 </div>
-                <div class="whiteImgUrl" style="display: none;">[[*{whiteImg}]]</div>
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">黑名单商品链接：</label>
-            <div class="col-sm-8">
-                <div style="width: 100%;display: flex;flex-wrap: wrap;">
-                    <div class="blackImg" style="display: flex;flex-wrap: wrap;margin-bottom: 10px;"></div>
-
-                </div>
-                <div class="blackImgUrl" style="display: none;">[[*{blackImg}]]</div>
-            </div>
-        </div>
-
-
         <div class="form-group">
             <label class="col-sm-3 control-label">代码展示：</label>
             <div class="col-sm-8">
@@ -43,8 +37,6 @@
                 </button>
             </div>
         </div>
-
-
     </form>
 </div>
 
@@ -89,7 +81,7 @@
         for (var i = 0; i < whiteImgArr.length; i++) {
             if (whiteImgArr[i] && whiteImgArr[i].trim() !== '') {
                 str = `<div class="teImg" style="position: relative;margin-right: 10px;margin-bottom: 10px;">
-                            <img src="` + whiteImgArr[i] + `" alt="" style="width: 80px;height: 80px;">
+                            <img src="` + whiteImgArr[i] + `" alt="" style="width: 160px;height: 160px;">
                        </div>`;
                 $('.whiteImg').append(str);
             }
@@ -118,7 +110,7 @@
         for (var i = 0; i < blackImgArr.length; i++) {
             if (blackImgArr[i] && blackImgArr[i].trim() !== '') {
                 str = `<div class="teImg" style="position: relative;margin-right: 10px;margin-bottom: 10px;">
-                            <img src="` + blackImgArr[i] + `" alt="" style="width: 80px;height: 80px;">
+                            <img src="` + blackImgArr[i] + `" alt="" style="width: 160px;height: 160px;">
                        </div>`;
                 $('.blackImg').append(str);
             }
