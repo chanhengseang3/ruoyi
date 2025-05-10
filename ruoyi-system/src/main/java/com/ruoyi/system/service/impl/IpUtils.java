@@ -32,7 +32,6 @@ public class IpUtils implements IpService {
     @Override
     @Cacheable(value = "isWhiteIp", key = "#ip")
     public boolean isWhiteIp(String ip) {
-        log.info("Cache MISS - Executing isWhiteIp method for IP: {}", ip);
         String getCountry = IPConfig.getAddressByIp(ip);
         log.info("IP is:{} Country is:{}", ip, getCountry);
         List<SysCountry> countries = countryMapper.selectSysCountryListByName(getCountry);
@@ -44,13 +43,14 @@ public class IpUtils implements IpService {
 
     private boolean isVpn(String ip) {
         final var header = Map.of("X-Key", xKey);
-        log.debug("key is:{}", xKey);
         ResponseEntity<String> responseEntity = RestTemplateService.get(url + ip, header);
         if (responseEntity.getStatusCodeValue() == 200) {
             final var body = responseEntity.getBody();
             log.debug("body is:{}", body);
             final var json = JSONObject.parseObject(body);
-            return json.getIntValue("block") == 1;
+            final var block = json.getIntValue("block");
+            log.info("IP is:{} block is:{}", ip, block);
+            return block == 1;
         }
         return false;
     }

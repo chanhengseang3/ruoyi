@@ -76,22 +76,4 @@ public class ImageController {
         }
         return arr[index];
     }
-
-    @GetMapping("fw/{name}")
-    public void listByCurrentIp(@PathVariable("name") String fileName,
-                                HttpServletRequest request,
-                                HttpServletResponse response) {
-
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        response.setHeader("Pragma", "no-cache");
-        var name = fileName.replace(".jpg", "");
-
-        final var list = name.split("\\+");
-        if (list.length != 3) {
-            throw new IllegalArgumentException("参数错误");
-        }
-        final var goodsId = Long.parseLong(list[0]);
-        final var index = Integer.parseInt(list[1]);
-        sysGoodsService.listByCurrentIp(goodsId, index, request, response);
-    }
 }
