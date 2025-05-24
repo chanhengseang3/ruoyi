@@ -17,14 +17,14 @@ import java.io.OutputStream;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("0x0/f3/albu/ys/m/12")
+@RequestMapping("/0x0/f3/albu/ys/m")
 public class DhgateController {
 
     //http://localhost/0x0/f3/albu/ys/m/12/3b4443d7-19e4-4d71-9c3d-9267b342c1f3.jpg
 
     private final ISysGoodsService sysGoodsService;
 
-    @GetMapping("/{name}")
+    @GetMapping("/{date}/{name}")
     public void image(@PathVariable("name") String name,
                       HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
