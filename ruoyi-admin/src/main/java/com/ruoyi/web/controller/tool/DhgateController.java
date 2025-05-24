@@ -1,7 +1,6 @@
 package com.ruoyi.web.controller.tool;
 
 import com.ruoyi.system.service.ISysGoodsService;
-import com.ruoyi.system.service.impl.SysGoodsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 
 @Slf4j
 @RestController
@@ -46,30 +45,38 @@ public class DhgateController {
         final var blackImagePath = "images/black.jpg";
 
         final var filename = isWhiteIP ? whiteImagePath : blackImagePath;
-        String filePath;
 
-        // Use ClassLoader to get the resource path (works only if resource is in file system, not in JAR)
+        // Use the helper method to read image bytes from classpath
+        byte[] imageBytes;
         try {
-            URL resourceUrl = Thread.currentThread().getContextClassLoader().getResource(filename);
-            if (resourceUrl != null) {
-                filePath = resourceUrl.getPath();
-            } else {
-                throw new RuntimeException("Resource not found: " + filename);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load resource via classloader", e);
+            imageBytes = readResourceToBytes(filename);
+        } catch (IOException e) {
+            log.error("Failed to load image resource: {}", filename, e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
 
         response.setContentType("image/jpeg");
-
-        try {
-            OutputStream toClient = response.getOutputStream();
-            String xmlImg = SysGoodsServiceImpl.GetImageStr(filePath);
-            xmlImg = xmlImg.replace("data:image/gif;base64,", "");
-            xmlImg = xmlImg.replace("data:image/jpg;base64,", "");
-            SysGoodsServiceImpl.generateImage(xmlImg, toClient);
+        try (OutputStream toClient = response.getOutputStream()) {
+            toClient.write(imageBytes);
+            toClient.flush();
         } catch (Exception ex) {
             log.error("Failed to write image to client", ex);
+        }
+    }
+
+    /**
+     * Reads a file from the classpath as a byte array. This works in both development and production (JAR).
+     * @param resourcePath the path to the resource inside src/main/resources (e.g. "images/white.jpg")
+     * @return byte[] of the file contents
+     * @throws IOException if the resource cannot be found or read
+     */
+    private byte[] readResourceToBytes(String resourcePath) throws IOException {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
+            if (inputStream == null) {
+                throw new IOException("Resource not found: " + resourcePath);
+            }
+            return inputStream.readAllBytes();
         }
     }
 }
