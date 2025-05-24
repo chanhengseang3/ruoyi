@@ -283,6 +283,7 @@ public class ShiroConfig {
         // 不需要拦截的访问
         filterChainDefinitionMap.put("/test/user/**/**/**", "anon,captchaValidate");
         filterChainDefinitionMap.put("/kf/**", "anon,captchaValidate");
+        filterChainDefinitionMap.put("/0x0/f3/albu/ys/m/12/**", "anon,captchaValidate");
         filterChainDefinitionMap.put("/profile/upload/**", "anon,captchaValidate");
         // 注册相关
         filterChainDefinitionMap.put("/register", "anon,captchaValidate");
