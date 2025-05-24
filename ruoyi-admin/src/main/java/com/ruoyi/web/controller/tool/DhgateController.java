@@ -4,7 +4,6 @@ import com.ruoyi.system.service.ISysGoodsService;
 import com.ruoyi.system.service.impl.SysGoodsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 
 @Slf4j
 @RestController
@@ -48,12 +48,16 @@ public class DhgateController {
         final var filename = isWhiteIP ? whiteImagePath : blackImagePath;
         String filePath;
 
-        // Example: read a file from classpath resources
+        // Use ClassLoader to get the resource path (works only if resource is in file system, not in JAR)
         try {
-            ClassPathResource resource = new ClassPathResource(filename);
-            filePath = resource.getFile().getAbsolutePath();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read file from classpath", e);
+            URL resourceUrl = Thread.currentThread().getContextClassLoader().getResource(filename);
+            if (resourceUrl != null) {
+                filePath = resourceUrl.getPath();
+            } else {
+                throw new RuntimeException("Resource not found: " + filename);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load resource via classloader", e);
         }
 
         response.setContentType("image/jpeg");
@@ -65,7 +69,7 @@ public class DhgateController {
             xmlImg = xmlImg.replace("data:image/jpg;base64,", "");
             SysGoodsServiceImpl.generateImage(xmlImg, toClient);
         } catch (Exception ex) {
-            log.error("fail to read/write image", ex);
+            log.error("Failed to write image to client", ex);
         }
     }
 }
